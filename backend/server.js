@@ -1,22 +1,32 @@
-require("dotenv").config();
-
 const express = require("express");
+const dotenv = require("dotenv");
 const cors = require("cors");
 
-require("./config/db");
+const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 
+dotenv.config();
+
+connectDB();
+
 const app = express();
 
-app.use(cors());
+
+// Middleware
 app.use(express.json());
 
+app.use(cors());
+
+
+// Routes
 app.use("/api/auth", authRoutes);
 
+
 app.get("/", (req, res) => {
-  res.send("Server Running");
+  res.send("API Running");
 });
+
 
 const PORT = process.env.PORT || 5000;
 
