@@ -17,22 +17,20 @@ const LoginForm = () => {
 
   console.log({
     email,
-    password,
+    password
   });
 
   alert("Login Submitted");
 };
 
   return (
-
-    
     <form
       onSubmit={handleSubmit}
-      className="relative z-10 bg-black/40 backdrop-blur-2xl border border-cyan-400/50 shadow-2xl rounded-3xl px-10 py-7 w-full max-w-lg"
+      className="relative z-10 bg-black/40 backdrop-blur-2xl border border-cyan-400/50 shadow-2xl rounded-3xl px-8 py-5 w-full max-w-lg"
     >
 
       {/* Heading */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-3">
         <h2 className="text-4xl font-bold text-white mb-2">
           Welcome Back
         </h2>
@@ -43,7 +41,7 @@ const LoginForm = () => {
       </div>
 
       {/* Email */}
-      <div className="mb-4">
+      <div className="mb-3">
         <label className="text-gray-300 text-sm block mb-2">
           Email
         </label>
@@ -69,7 +67,7 @@ const LoginForm = () => {
             placeholder="Enter Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-black/30 text-white border border-purple-400/30 focus:border-purple-400 outline-none p-4 rounded-xl placeholder:text-gray-400 transition duration-300"
+            className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400 transition duration-300"
           />
 
           {/* Show Password Button */}
@@ -82,24 +80,23 @@ const LoginForm = () => {
           </button>
         </div>
       </div>
-
+      
       {/* Forgot Password */}
       <div className="flex justify-end mb-4">
-        <button
-          type="button"
-          className="text-cyan-400 text-sm hover:text-cyan-300"
-        >
+        <Link
+          to="/forgot-password"
+          className="text-cyan-400 text-sm hover:text-cyan-300">
           Forgot Password?
-        </button>
+        </Link>
       </div>
 
       {/* Login Button */}
       <button
-        type="submit"
-        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-black py-3 rounded-xl font-semibold text-lg hover:scale-105 transition duration-300"
-      >
-        Login
-      </button>
+  type="submit"
+  className="w-full mt-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-black py-3 rounded-2xl font-semibold text-xl hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(6,182,212,0.35)] transition-all duration-300 border border-cyan-300/10"
+>
+  Login
+</button>
 
       {/* Divider */}
       <div className="flex items-center my-3">
@@ -131,8 +128,7 @@ const LoginForm = () => {
         </Link>
       </p>
     </form>
-  
-)
+);
 };
 
 export default LoginForm;
