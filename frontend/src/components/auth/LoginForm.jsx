@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -23,17 +24,11 @@ const LoginForm = () => {
 };
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden px-4">
 
-    {/* Background Glow Effects */}
-    <div className="absolute top-0 left-0 w-96 h-86 bg-cyan-500 opacity-20 blur-3xl rounded-full"></div>
-
-    <div className="absolute bottom-0 right-0 w-96 h-86 bg-purple-500 opacity-20 blur-3xl rounded-full"></div>
-
-    {/* Login Card */}
+    
     <form
       onSubmit={handleSubmit}
-      className="relative z-10 bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl p-10 py=7 w-full max-w-lg"
+      className="relative z-10 bg-black/40 backdrop-blur-2xl border border-cyan-400/50 shadow-2xl rounded-3xl px-10 py-7 w-full max-w-lg"
     >
 
       {/* Heading */}
@@ -101,7 +96,7 @@ const LoginForm = () => {
       {/* Login Button */}
       <button
         type="submit"
-        className="w-full-bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-2 rounded-xl font-semibold text-lg hover:scale-105 transition duration-300 shadow-lg"
+        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-black py-3 rounded-xl font-semibold text-lg hover:scale-105 transition duration-300"
       >
         Login
       </button>
@@ -128,12 +123,15 @@ const LoginForm = () => {
       {/* Signup */}
       <p className="text-center text-gray-400 mt-8">
         Don't have an account?{" "}
-        <span className="text-cyan-400 cursor-pointer hover:text-cyan-300">
-          Sign Up
-        </span>
+        <Link
+            to="/register"
+            className="text-cyan-400 hover:text-cyan-300"
+        >
+        Sign Up
+        </Link>
       </p>
     </form>
-  </div>
+  
 )
 };
 

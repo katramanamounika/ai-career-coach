@@ -1,5 +1,6 @@
 import { Routes, Route, Link } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/Register";
 
 function HomePage() {
   return (
@@ -24,8 +25,10 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
 
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
     </Routes>
   );
 };
+
 
 export default AppRoutes;
