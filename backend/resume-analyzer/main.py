@@ -3,6 +3,7 @@ import pdfplumber
 from skills import extract_skills
 from ats import calculate_ats_score,missing_skills
 from suggestions import generate_suggestions
+from questions import generate_questions
 
 app = FastAPI()
 
@@ -30,10 +31,12 @@ async def upload_resume(file: UploadFile = File(...)):
     score=calculate_ats_score(skills)
     missing=missing_skills(skills)
     suggestion=generate_suggestions(score)
+    questions=generate_questions(skills)
     return {
         "resume_text": text,
         "skills": skills,
         "ats_score": score,
         "missing_skills": missing,
-        "suggestion": suggestion
+        "suggestion": suggestion,
+        "questions": questions
     }
