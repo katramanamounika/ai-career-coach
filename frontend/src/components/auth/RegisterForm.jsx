@@ -53,11 +53,11 @@ const RegisterForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative z-10 bg-black/50 backdrop-blur-2xl border border-cyan-400/50 shadow-2xl rounded-3xl px-10 py-6 w-full max-w-lg"
+      className="relative z-10 bg-black/50 backdrop-blur-2xl border border-cyan-400/50 shadow-2xl rounded-3xl px-9 py-5 w-full max-w-lg"
     >
 
       {/* Heading */}
-      <div className="text-center mb-5">
+      <div className="text-center mb-3">
         <h2 className="text-4xl font-bold text-white mb-2">
           Create Account
         </h2>
@@ -116,7 +116,7 @@ const RegisterForm = () => {
       </div>
 
       {/* Show Password */}
-      <div className="mb-4">
+      <div className="mb-3">
         <button
           type="button"
           onClick={() =>
