@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import toast from "react-hot-toast";
+import AuthButton from "../common/AuthButton";
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -9,9 +10,9 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
 
-  const [showPassword, setShowPassword] =
-    useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -20,35 +21,95 @@ const RegisterForm = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const {
-      name,
-      email,
-      password,
-      confirmPassword,
-    } = formData;
+  let newErrors = {};
 
-    // Validation
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !confirmPassword
-    ) {
-      alert("All fields are required");
-      return;
-    }
+  const {
+    name,
+    email,
+    password,
+    confirmPassword,
+  } = formData;
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+  // Name Validation
+  if (!name) {
+    newErrors.name = "Name is required";
+  } else if (name.length < 3) {
+    newErrors.name =
+      "Name must be at least 3 characters";
+  } else if (!/^[A-Za-z ]+$/.test(name)) {
+    newErrors.name =
+      "Name should contain only letters";
+  }
 
-    console.log(formData);
+  // Email Validation
+  if (!email) {
+    newErrors.email = "Email is required";
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
+  ) {
+    newErrors.email =
+      "Invalid email address";
+  }
 
-    alert("Registration Successful");
-  };
+  // Password Validation
+  if (!password) {
+    newErrors.password =
+      "Password is required";
+  } else if (password.length < 8) {
+    newErrors.password =
+      "Password must be at least 8 characters";
+  } else if (
+    !/(?=.*[a-z])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain lowercase letter";
+  } else if (
+    !/(?=.*[A-Z])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain uppercase letter";
+  } else if (
+    !/(?=.*[0-9])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain a number";
+  } else if (
+    !/(?=.*[!@#$%^&*])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain special character";
+  }
+
+  // Confirm Password Validation
+  if (!confirmPassword) {
+    newErrors.confirmPassword =
+      "Confirm your password";
+  } else if (
+    password !== confirmPassword
+  ) {
+    newErrors.confirmPassword =
+      "Passwords do not match";
+  }
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length > 0)
+    return;
+
+  setLoading(true);
+
+setTimeout(() => {
+
+  console.log(formData);
+
+  setLoading(false);
+
+  toast.success("Registration Successful");
+
+}, 2000);
+};
 
   return (
     <form
@@ -77,6 +138,11 @@ const RegisterForm = () => {
           onChange={handleChange}
           className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400"
         />
+        {errors.name && (
+        <p className="text-red-400 text-sm mt-2">
+        {errors.name}
+        </p>
+        )}
       </div>
 
       {/* Email */}
@@ -89,6 +155,11 @@ const RegisterForm = () => {
           onChange={handleChange}
           className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400"
         />
+        {errors.email && (
+        <p className="text-red-400 text-sm mt-2">
+        {errors.email}
+        </p>
+        )}
       </div>
 
       {/* Password */}
@@ -99,8 +170,13 @@ const RegisterForm = () => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="w-full bg-black/30 text-white border border-purple-400/30 focus:border-purple-400 outline-none p-4 rounded-xl placeholder:text-gray-400"
+          className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400"
         />
+        {errors.password && (
+        <p className="text-red-400 text-sm mt-2">
+        {errors.password}
+        </p>
+        )}
       </div>
 
       {/* Confirm Password */}
@@ -111,8 +187,13 @@ const RegisterForm = () => {
           placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          className="w-full bg-black/30 text-white border border-purple-400/30 focus:border-purple-400 outline-none p-4 rounded-xl placeholder:text-gray-400"
+          className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400"
         />
+        {errors.confirmPassword && (
+        <p className="text-red-400 text-sm mt-2">
+        {errors.confirmPassword}
+        </p>
+        )}
       </div>
 
       {/* Show Password */}
@@ -131,12 +212,12 @@ const RegisterForm = () => {
       </div>
 
       {/* Submit */}
-      <button
+      <AuthButton
         type="submit"
-        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-black py-3 rounded-xl font-semibold text-lg hover:scale-105 transition duration-300"
-      >
-        Create Account
-      </button>
+        text="Create Account"
+        loadingText="Creating Account..."
+        loading={loading}
+      />
 
       {/* Login Link */}
       <p className="text-center text-gray-400 mt-6">

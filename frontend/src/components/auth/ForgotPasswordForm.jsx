@@ -1,21 +1,49 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import AuthButton from "../common/AuthButton";
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!email) {
-      alert("Email is required");
-      return;
-    }
+  let newErrors = {};
 
-    console.log(email);
+  // Email Validation
+  if (!email.trim()) {
+    newErrors.email =
+      "Email is required";
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
+  ) {
+    newErrors.email =
+      "Enter valid email";
+  }
 
-    alert("Reset link sent successfully");
-  };
+  setErrors(newErrors);
+
+  if (
+    Object.keys(newErrors).length > 0
+  ) {
+    return;
+  }
+
+  setLoading(true);
+
+setTimeout(() => {
+
+  console.log(email);
+
+  setLoading(false);
+
+  toast.success("Reset link sent successfully");
+
+}, 2000);
+};
 
   return (
     <form
@@ -48,16 +76,20 @@ const ForgotPasswordForm = () => {
           }
           className="w-full bg-black/30 text-white border border-cyan-400/20 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400 transition duration-300"
         />
-
+        {errors.email && (
+        <p className="text-red-400 text-sm mt-2">
+        {errors.email}
+        </p>
+        )}
       </div>
 
       {/* Submit Button */}
-      <button
+      <AuthButton
         type="submit"
-        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-black py-3 rounded-xl font-semibold text-lg hover:scale-105 transition duration-300 shadow-lg"
-      >
-        Send Reset Link
-      </button>
+        text="Send Reset Link"
+        loadingText="Sending link..."
+        loading={loading}
+      />
 
       {/* Divider */}
       <div className="flex items-center my-5">

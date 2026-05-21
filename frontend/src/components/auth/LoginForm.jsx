@@ -1,28 +1,85 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import AuthButton from "../common/AuthButton";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
   e.preventDefault();
 
-  // Validation
-  if (!email || !password) {
-    alert("All fields are required");
-    return;
+  let newErrors = {};
+
+  // Email Validation
+  if (!email) {
+    newErrors.email = "Email is required";
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
+  ) {
+    newErrors.email =
+      "Invalid email address";
   }
+
+  // Password Validation
+  if (!password) {
+    newErrors.password =
+      "Password is required";
+  } else if (password.length < 8) {
+    newErrors.password =
+      "Password must be at least 8 characters";
+  } else if (
+    !/(?=.*[a-z])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain lowercase letter";
+  } else if (
+    !/(?=.*[A-Z])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain uppercase letter";
+  } else if (
+    !/(?=.*[0-9])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain a number";
+  } else if (
+    !/(?=.*[!@#$%^&*])/.test(password)
+  ) {
+    newErrors.password =
+      "Password must contain special character";
+  }
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length > 0)
+    return;
+
+  setLoading(true);
+
+setTimeout(() => {
 
   console.log({
     email,
-    password
+    password,
   });
 
-  alert("Login Submitted");
-};
+  setLoading(false);
 
+  const success = true;
+
+if (success) {
+  toast.success("Login Successful");
+} else {
+  toast.error("Invalid Credentials");
+}
+
+}, 2000);
+};
   return (
     <form
       onSubmit={handleSubmit}
@@ -53,6 +110,11 @@ const LoginForm = () => {
           onChange={(e) => setEmail(e.target.value)}
           className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400 transition duration-300"
         />
+        {errors.email && (
+        <p className="text-red-400 text-sm mt-2">
+        {errors.email}
+        </p>
+      )}
       </div>
 
       {/* Password */}
@@ -69,7 +131,11 @@ const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full bg-black/30 text-white border border-cyan-400/30 focus:border-cyan-400 outline-none p-4 rounded-xl placeholder:text-gray-400 transition duration-300"
           />
-
+          {errors.password && (
+          <p className="text-red-400 text-sm mt-2">
+          {errors.password}
+          </p>
+          )}
           {/* Show Password Button */}
           <button
             type="button"
@@ -91,13 +157,12 @@ const LoginForm = () => {
       </div>
 
       {/* Login Button */}
-      <button
-  type="submit"
-  className="w-full mt-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-black py-3 rounded-2xl font-semibold text-xl hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(6,182,212,0.35)] transition-all duration-300 border border-cyan-300/10"
->
-  Login
-</button>
-
+      <AuthButton
+        type="submit"
+        text="Login"
+        loadingText="Logging in..."
+        loading={loading}
+      />
       {/* Divider */}
       <div className="flex items-center my-3">
         <div className="flex-1 border-t border-white/10"></div>
