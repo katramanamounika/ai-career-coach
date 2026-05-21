@@ -1,13 +1,20 @@
-def generate_suggestions(score):
+from roles_data import ROLES_DATA
 
-    if score >= 80:
+def generate_suggestions(role, missing_skills):
 
-        return "Excellent Resume"
+    improvements = ROLES_DATA[role]["improvements"]
 
-    elif score >= 60:
+    suggestions = []
 
-        return "Good Resume But Needs Some Improvements"
+    for skill in missing_skills:
 
-    else:
+        if skill in improvements:
 
-        return "Add More Relevant Skills And Projects"
+            suggestions.append({
+
+                "skill": skill,
+
+                "suggestion": improvements[skill]
+            })
+
+    return suggestions

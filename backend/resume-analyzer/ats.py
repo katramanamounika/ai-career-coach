@@ -1,33 +1,17 @@
-REQUIRED_SKILLS = [
+from roles_data import ROLES_DATA
 
-    "python",
-    "react",
-    "mongodb",
-    "git",
-    "docker"
+def calculate_ats_score(role, skills):
 
-]
-
-def calculate_ats_score(found_skills):
+    required_skills = ROLES_DATA[role]["skills"]
 
     matched = 0
 
-    for skill in REQUIRED_SKILLS:
+    for skill in skills:
 
-        if skill in found_skills:
+        if skill in required_skills:
+
             matched += 1
 
-    score = (matched / len(REQUIRED_SKILLS)) * 100
+    score = (matched / len(required_skills)) * 100
 
     return round(score, 2)
-
-def missing_skills(found_skills):
-
-    missing = []
-
-    for skill in REQUIRED_SKILLS:
-
-        if skill not in found_skills:
-            missing.append(skill)
-
-    return missing
