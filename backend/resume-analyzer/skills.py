@@ -2,31 +2,56 @@ SKILLS_DB = [
 
     "python",
     "java",
-    "c",
     "c++",
-    "react",
-    "nodejs",
-    "mongodb",
-    "sql",
-    "machine learning",
-    "fastapi",
-    "git",
-    "docker",
     "html",
     "css",
-    "javascript"
-
+    "javascript",
+    "react",
+    "redux",
+    "nodejs",
+    "express",
+    "mongodb",
+    "sql",
+    "mysql",
+    "postgresql",
+    "machine learning",
+    "deep learning",
+    "tensorflow",
+    "pytorch",
+    "nlp",
+    "fastapi",
+    "django",
+    "flask",
+    "docker",
+    "kubernetes",
+    "aws",
+    "azure",
+    "gcp",
+    "linux",
+    "jenkins",
+    "power bi",
+    "tableau",
+    "excel",
+    "figma",
+    "flutter",
+    "react native",
+    "selenium",
+    "ethical hacking",
+    "network security",
+    "data structures",
+    "algorithms"
 ]
 
 def extract_skills(text):
 
-    found_skills = []
+    found = []
 
     text = text.lower()
 
     for skill in SKILLS_DB:
 
         if skill in text:
-            found_skills.append(skill)
 
-    return found_skills
+            found.append(skill)
+
+    return found
