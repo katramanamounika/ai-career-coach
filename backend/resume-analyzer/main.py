@@ -229,9 +229,16 @@ video_thread.join()
 # CONFIDENCE SCORE
 # ==============================
 
+answers = []
+
+for result in results:
+
+    answers.append(result["answer"])
+
 confidence_score = calculate_confidence(
 
-    emotion_data
+    emotion_data,
+    answers
 )
 
 print("\nConfidence Score:\n")
