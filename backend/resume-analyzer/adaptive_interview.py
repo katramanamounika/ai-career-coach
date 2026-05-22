@@ -6,9 +6,9 @@ from evaluator import evaluate_answer
 import time
 
 
-def start_interview(skills):
+def start_interview(role):
 
-    questions = generate_questions(skills)
+    questions = generate_questions(role)
 
     results = []
 
@@ -20,15 +20,19 @@ def start_interview(skills):
 
     for question in questions:
 
+        print("\nAI:", question)
+
         speak_text(question)
 
-        time.sleep(2)
-
-        print("\nAnswer now...\n")
+        print(
+            "\nYou have maximum 30 seconds to answer.\n"
+        )
 
         answer = listen_answer()
 
         feedback = evaluate_answer(answer)
+
+        print("\nAI Feedback:", feedback)
 
         speak_text(feedback)
 

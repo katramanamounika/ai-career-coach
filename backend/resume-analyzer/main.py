@@ -6,7 +6,6 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 from resume_parser import extract_resume_text
 from skills import extract_skills
-from role_detection import detect_role
 from ats import calculate_ats_score
 from skill_gap import find_missing_skills
 from suggestions import generate_suggestions
@@ -36,9 +35,15 @@ def start_video_analysis():
     global emotion_data
     global camera_running
 
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(
+
+    0,
+
+    cv2.CAP_DSHOW
+)
 
     while camera_running:
+        time.sleep(1)
 
         success, frame = camera.read()
 
@@ -57,8 +62,27 @@ def start_video_analysis():
             )
 
             emotion = result[0]['dominant_emotion']
+            
 
-            emotion_data.append(emotion)
+            valid_emotions=[
+
+                "happy",
+
+                "neutral",
+
+                "surprise",
+
+                "fear",
+
+                "sad",
+
+                "angry",
+
+                "disgust"
+            ]
+            if emotion in valid_emotions:
+
+                emotion_data.append(emotion)
 
             cv2.putText(
 
@@ -134,17 +158,62 @@ print("\nExtracted Skills:\n")
 
 print(skills)
 
+print("\n========== AVAILABLE ROLES ==========\n")
 
-# ==============================
-# ROLE DETECTION
-# ==============================
+roles = [
 
-role = detect_role(skills)
+    "frontend developer",
 
-print("\nDetected Role:\n")
+    "backend developer",
+
+    "full stack developer",
+
+    "python developer",
+
+    "java developer",
+
+    "data analyst",
+
+    "data scientist",
+
+    "ai ml engineer",
+
+    "software engineer",
+
+    "devops engineer",
+
+    "cyber security engineer",
+
+    "cloud engineer",
+
+    "mobile app developer",
+
+    "qa engineer",
+
+    "blockchain developer",
+
+    "ui ux designer",
+
+    "game designer",
+
+    "embedded systems engineer"
+]
+
+for index, role_name in enumerate(roles, start=1):
+
+    print(f"{index}. {role_name}")
+
+
+choice = int(
+
+    input("\nSelect Role Number: ")
+)
+
+role = roles[choice - 1]
+
+print("\nSelected Role:\n")
 
 print(role)
-
 
 # ==============================
 # ATS SCORE
@@ -213,7 +282,7 @@ print("\n========== STARTING AI INTERVIEW ==========\n")
 print("\n========Please answer every question=======\n")
 print("\n========You will get 30 seconds to answer every question=========\n")
 
-results = start_interview(skills)
+results = start_interview(role)
 
 
 # ==============================
@@ -237,8 +306,7 @@ for result in results:
 
 confidence_score = calculate_confidence(
 
-    emotion_data,
-    answers
+    emotion_data
 )
 
 print("\nConfidence Score:\n")

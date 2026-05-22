@@ -1,22 +1,19 @@
 import speech_recognition as sr
 
-recognizer = sr.Recognizer()
-
-# VERY IMPORTANT
-recognizer.pause_threshold = 3
-
-recognizer.energy_threshold = 300
-
 
 def listen_answer():
 
+    recognizer = sr.Recognizer()
+
     with sr.Microphone() as source:
 
-        print("\nListening Carefully...")
+        print("\nListening...\n")
 
         recognizer.adjust_for_ambient_noise(
+
             source,
-            duration=2
+
+            duration=1
         )
 
         try:
@@ -25,9 +22,9 @@ def listen_answer():
 
                 source,
 
-                timeout=40,
+                timeout=30,
 
-                phrase_time_limit=60
+                phrase_time_limit=30
             )
 
             text = recognizer.recognize_google(audio)
@@ -38,12 +35,12 @@ def listen_answer():
 
         except sr.WaitTimeoutError:
 
-            return "No answer given"
+            print("\nTime exceeded!\n")
 
-        except sr.UnknownValueError:
+            return ""
 
-            return "Could not understand audio"
+        except:
 
-        except sr.RequestError:
+            print("\nCould not recognize voice.\n")
 
-            return "Speech service error"
+            return ""
