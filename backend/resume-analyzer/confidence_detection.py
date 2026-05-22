@@ -1,86 +1,38 @@
-import cv2
+from collections import Counter
 
-def analyze_confidence():
+def calculate_confidence(emotions):
 
-    camera = cv2.VideoCapture(0)
+    emotion_count = Counter(emotions)
 
-    face_cascade = cv2.CascadeClassifier(
+    print("\nEmotion Analysis:\n")
 
-        cv2.data.haarcascades +
-        "haarcascade_frontalface_default.xml"
+    print(emotion_count)
 
+    confidence_score = 50
+
+    happy_count = emotion_count.get("happy", 0)
+
+    neutral_count = emotion_count.get("neutral", 0)
+
+    fear_count = emotion_count.get("fear", 0)
+
+    sad_count = emotion_count.get("sad", 0)
+
+    angry_count = emotion_count.get("angry", 0)
+
+    confidence_score += happy_count * 2
+
+    confidence_score += neutral_count * 1
+
+    confidence_score -= fear_count * 4
+
+    confidence_score -= sad_count * 5
+
+    confidence_score -= angry_count * 5
+
+    confidence_score = max(
+        0,
+        min(confidence_score, 100)
     )
 
-    confidence_score = 0
-
-    while True:
-
-        success, frame = camera.read()
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        faces = face_cascade.detectMultiScale(
-
-            gray,
-            1.1,
-            4
-
-        )
-
-        # FACE DETECTED
-        if len(faces) > 0:
-
-            confidence_score += 1
-
-            confidence_level = "Confident"
-
-        else:
-
-            confidence_level = "Not Confident"
-
-        for (x, y, w, h) in faces:
-
-            cv2.rectangle(
-
-                frame,
-                (x, y),
-                (x + w, y + h),
-                (0, 255, 0),
-                2
-
-            )
-
-            cv2.putText(
-
-                frame,
-                confidence_level,
-                (x, y - 10),
-
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.7,
-                (0, 255, 0),
-                2
-
-            )
-
-        cv2.imshow(
-
-            "Confidence Detection",
-            frame
-
-        )
-
-        # ESC KEY TO CLOSE
-        if cv2.waitKey(1) == 27:
-            break
-
-    camera.release()
-
-    cv2.destroyAllWindows()
-
-    return {
-
-        "confidence_score": confidence_score,
-        "confidence_level": confidence_level
-
-    }
+    return confidence_score
