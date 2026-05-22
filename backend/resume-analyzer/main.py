@@ -1,3 +1,9 @@
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 from resume_parser import extract_resume_text
 from skills import extract_skills
 from role_detection import detect_role
@@ -5,6 +11,7 @@ from ats import calculate_ats_score
 from skill_gap import find_missing_skills
 from suggestions import generate_suggestions
 from adaptive_interview import start_interview
+from confidence_detection import calculate_confidence
 
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
@@ -70,8 +77,9 @@ def start_video_analysis():
                 2
             )
 
-        except:
-            pass
+        except Exception as e:
+
+            print("Emotion Detection Error:", e)
 
         cv2.imshow("AI Video Interview", frame)
 
@@ -81,43 +89,6 @@ def start_video_analysis():
     camera.release()
 
     cv2.destroyAllWindows()
-
-
-# ==============================
-# CALCULATE CONFIDENCE
-# ==============================
-
-def calculate_confidence(emotions):
-
-    confidence_score = 50
-
-    confident_emotions = [
-
-        "happy",
-        "neutral"
-    ]
-
-    nervous_emotions = [
-
-        "fear",
-        "sad",
-        "angry"
-    ]
-
-    for emotion in emotions:
-
-        if emotion in confident_emotions:
-
-            confidence_score += 2
-
-        elif emotion in nervous_emotions:
-
-            confidence_score -= 2
-
-    confidence_score = max(0, min(confidence_score, 100))
-
-    return confidence_score
-
 
 # ==============================
 # START APPLICATION
@@ -239,6 +210,8 @@ time.sleep(3)
 # ==============================
 
 print("\n========== STARTING AI INTERVIEW ==========\n")
+print("\n========Please answer every question=======\n")
+print("\n========You will get 30 seconds to answer every question=========\n")
 
 results = start_interview(skills)
 
