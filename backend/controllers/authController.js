@@ -251,6 +251,25 @@ const resetPassword = async (req, res) => {
   }
 
 };
+const googleAuth = async (req, res) => {
+
+  try {
+
+    res.status(200).json({
+      success: true,
+      message: "Google OAuth backend will be implemented in future phase",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+
+};
 
 module.exports = {
   signupUser,
@@ -258,4 +277,5 @@ module.exports = {
   getCurrentUser,
   forgotPassword,
   resetPassword,
+  googleAuth
 };
