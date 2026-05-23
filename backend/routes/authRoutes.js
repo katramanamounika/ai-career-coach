@@ -9,6 +9,7 @@ const {
   getCurrentUser,
   forgotPassword,
   resetPassword,
+  googleAuth
 } = require("../controllers/authController");
 
 
@@ -18,6 +19,7 @@ router.post("/signup", signupUser);
 
 // Login Route
 router.post("/login", loginUser);
+router.post("/google", googleAuth);
 
 
 // Protected Route
