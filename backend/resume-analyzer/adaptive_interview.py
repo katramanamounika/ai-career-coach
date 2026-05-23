@@ -20,19 +20,27 @@ def start_interview(role):
 
     for question in questions:
 
-        print("\nAI:", question)
+        print("\nAI Question:\n")
+
+        print(question)
 
         speak_text(question)
 
         print(
-            "\nYou have maximum 30 seconds to answer.\n"
+            "\nYou have 30 seconds to answer.\n"
         )
 
         answer = listen_answer()
 
+        print("\nYour Answer:\n")
+
+        print(answer)
+
         feedback = evaluate_answer(answer)
 
-        print("\nAI Feedback:", feedback)
+        print("\nAI Feedback:\n")
+
+        print(feedback)
 
         speak_text(feedback)
 

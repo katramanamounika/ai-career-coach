@@ -29,7 +29,6 @@ emotion_data = []
 
 camera_running = True
 
-
 def start_video_analysis():
 
     global emotion_data

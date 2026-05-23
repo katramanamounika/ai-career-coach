@@ -1,4 +1,5 @@
 import speech_recognition as sr
+import time
 
 
 def listen_answer():
@@ -7,40 +8,52 @@ def listen_answer():
 
     with sr.Microphone() as source:
 
-        print("\nListening...\n")
+        print("\nListening... You have 30 seconds.\n")
 
         recognizer.adjust_for_ambient_noise(
-
             source,
-
-            duration=1
+            duration=2
         )
 
-        try:
+        start_time = time.time()
 
-            audio = recognizer.listen(
+        audio_data = []
 
-                source,
+        while time.time() - start_time < 30:
 
-                timeout=30,
+            try:
 
-                phrase_time_limit=30
-            )
+                audio = recognizer.listen(
 
-            text = recognizer.recognize_google(audio)
+                    source,
 
-            print("\nCandidate:", text)
+                    timeout=5,
 
-            return text
+                    phrase_time_limit=5
+                )
 
-        except sr.WaitTimeoutError:
+                audio_data.append(audio)
 
-            print("\nTime exceeded!\n")
+            except:
 
-            return ""
+                pass
 
-        except:
+        full_answer = ""
 
-            print("\nCould not recognize voice.\n")
+        for audio in audio_data:
 
-            return ""
+            try:
+
+                text = recognizer.recognize_google(audio)
+
+                full_answer += " " + text
+
+            except:
+
+                pass
+
+        if full_answer.strip() == "":
+
+            return "No answer detected"
+
+        return full_answer
