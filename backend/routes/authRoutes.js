@@ -1,36 +1,16 @@
 const express = require("express");
+
 const router = express.Router();
 
-const protect = require("../middleware/authMiddleware");
-
 const {
-  signupUser,
-  loginUser,
-  getCurrentUser,
-  forgotPassword,
-  resetPassword,
-  googleAuth
+  registerUser,
+  loginUser
 } = require("../controllers/authController");
 
+// REGISTER ROUTE
+router.post("/register", registerUser);
 
-// Signup Route
-router.post("/signup", signupUser);
-
-
-// Login Route
+// LOGIN ROUTE
 router.post("/login", loginUser);
-router.post("/google", googleAuth);
 
-
-// Protected Route
-router.get("/me", protect, getCurrentUser);
-
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
-router.get("/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "Test route working",
-  });
-});
 module.exports = router;
