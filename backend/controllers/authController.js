@@ -13,6 +13,7 @@ const signupUser = async (req, res) => {
     if (!name || !email || !password) {
 
   return res.status(400).json({
+    success: false,
     message: "All fields are required",
   });
 
@@ -25,6 +26,7 @@ const signupUser = async (req, res) => {
     if (existingUser) {
 
       return res.status(400).json({
+        success: false,
         message: "User already exists",
       });
 
@@ -44,19 +46,19 @@ const signupUser = async (req, res) => {
     });
 
     res.status(201).json({
-  message: "User registered successfully",
-
-  user: {
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-  },
-
+      success: true,
+      message: "User registered successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
 
   } catch (error) {
 
     res.status(500).json({
+      success: false,
       message: error.message,
     });
 
@@ -74,6 +76,7 @@ const loginUser = async (req, res) => {
     if (!email || !password) {
 
   return res.status(400).json({
+    success: false,
     message: "All fields are required",
   });
 
@@ -86,6 +89,7 @@ const loginUser = async (req, res) => {
     if (!user) {
 
       return res.status(400).json({
+        success: false,
         message: "Invalid email or password",
       });
 
@@ -99,6 +103,7 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
 
       return res.status(400).json({
+        success: false,
         message: "Invalid email or password",
       });
 
@@ -115,6 +120,7 @@ const loginUser = async (req, res) => {
     );
 
     res.status(200).json({
+    success: true,
   message: "Login successful",
 
   token,
@@ -130,6 +136,7 @@ const loginUser = async (req, res) => {
   } catch (error) {
 
     res.status(500).json({
+      success: false,
       message: error.message,
     });
 
@@ -153,6 +160,91 @@ const getCurrentUser = async (req, res) => {
   } catch (error) {
 
     res.status(500).json({
+        success: false,
+      message: error.message,
+    });
+
+  }
+
+};
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User verified successfully",
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+const resetPassword = async (req, res) => {
+
+  try {
+
+    const { email, newPassword } = req.body;
+
+    // Check fields
+    if (!email || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+
+    // User not found
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successful",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
       message: error.message,
     });
 
@@ -160,9 +252,10 @@ const getCurrentUser = async (req, res) => {
 
 };
 
-
 module.exports = {
   signupUser,
   loginUser,
   getCurrentUser,
+  forgotPassword,
+  resetPassword,
 };
