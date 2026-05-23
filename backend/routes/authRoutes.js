@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 
 const protect = require("../middleware/authMiddleware");
 
@@ -6,9 +7,9 @@ const {
   signupUser,
   loginUser,
   getCurrentUser,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/authController");
-
-const router = express.Router();
 
 
 // Signup Route
@@ -22,5 +23,12 @@ router.post("/login", loginUser);
 // Protected Route
 router.get("/me", protect, getCurrentUser);
 
-
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
+router.get("/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Test route working",
+  });
+});
 module.exports = router;
