@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   uploadResume,
   getUserResumes,
+  deleteResume,
 } = require("../controllers/resumeController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -21,5 +22,9 @@ router.get(
   protect,
   getUserResumes
 );
-
+router.delete(
+    "/:id",
+    protect,
+    deleteResume
+);
 module.exports = router;
