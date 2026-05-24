@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  uploadResume
+  uploadResume,
+  getUserResumes,
 } = require("../controllers/resumeController");
 
 const { protect } = require("../middleware/authMiddleware");
@@ -14,6 +15,11 @@ router.post(
   protect,
   upload.single("resume"),
   uploadResume
+);
+router.get(
+  "/my-resumes",
+  protect,
+  getUserResumes
 );
 
 module.exports = router;
