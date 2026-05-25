@@ -2,6 +2,11 @@ const Resume = require("../models/Resume");
 
 const uploadResume = async (req, res) => {
   try {
+    if(!req.file){
+        return res.status(400).json({
+            message:"no file uploaded",
+        });
+    }
     const resume = await Resume.create({
   user: req.user._id,
   resumeUrl: req.file.path,
