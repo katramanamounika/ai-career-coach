@@ -2,27 +2,28 @@ import FeatureCard from "./FeatureCard";
 
 export default function FeaturesSection() {
   return (
-    <section className="pt-8 pb-20">
+    <section className="pt-0 pb-20 -mt-12">
 
-      <div className="w-[88%] max-w-[1400px] mx-auto">
+      <div className="w-[88%] max-w-[1400px] mx-auto px-6 md:px-10">
 
         {/* Heading */}
         <div className="text-center mb-12">
 
-          <h2 className="text-6xl font-bold">
+          <h2 className="text-3xl lg:text-4xl font-bold">
             Everything You Need to Succeed
           </h2>
 
-          <p className="text-gray-400 text-2xl mt-3">
+          <p className="text-gray-400 text-lg mt-3">
             All the tools you need in one platform
           </p>
 
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-4 gap-8">
 
           <FeatureCard
+
             icon="📄"
             title="ATS Resume Scanner"
             description="Get detailed analysis and improve your resume score."

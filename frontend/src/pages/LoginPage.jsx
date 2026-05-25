@@ -5,7 +5,7 @@ const LoginPage = () => {
     <div className="min-h-screen w-full bg-black relative overflow-hidden flex items-center justify-center px-4">
 
       {/* Base Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-950 to-cyan-950"></div>
+      <div className="absolute inset-0 bg-linear-to-br from-black via-slate-950 to-cyan-950"></div>
 
       {/* Full Screen Cyan Ambient Glow */}
       <div className="absolute inset-0 bg-cyan-500/10 blur-[180px]"></div>
