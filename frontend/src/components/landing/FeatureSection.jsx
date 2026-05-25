@@ -2,12 +2,12 @@ import FeatureCard from "./FeatureCard";
 
 export default function FeaturesSection() {
   return (
-    <section className="pt-0 pb-20 -mt-12">
+    <section id="features" className="pt-15 pb-15">
 
       <div className="w-[88%] max-w-[1400px] mx-auto px-6 md:px-10">
 
         {/* Heading */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
 
           <h2 className="text-3xl lg:text-4xl font-bold">
             Everything You Need to Succeed
