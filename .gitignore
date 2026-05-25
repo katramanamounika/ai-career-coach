@@ -1,2 +1,6 @@
 venv/
 __pycache__/
+uploads/
+.postman/
+postman/
+node_modules/
