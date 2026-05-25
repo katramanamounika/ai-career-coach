@@ -19,7 +19,7 @@ const uploadResume = async (req, res) => {
     });
   }
 };
-const getUserResumes = async (req, res) => {
+const getMyResumes = async (req, res) => {
   try {
 
     const resumes = await Resume.find({
@@ -69,6 +69,6 @@ const deleteResume = async (req, res) => {
 };
 module.exports = {
   uploadResume,
-  getUserResumes,
+  getMyResumes,
   deleteResume
 };

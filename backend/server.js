@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
+const atsRoutes=require("./routes/atsRoutes");
 const app = express();
 
 connectDB();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/ats",atsRoutes);
 app.get("/", (req, res) => {
   res.send("API Running");
 });

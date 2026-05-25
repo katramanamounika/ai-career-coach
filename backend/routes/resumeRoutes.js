@@ -1,30 +1,29 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  uploadResume,
-  getUserResumes,
-  deleteResume,
-} = require("../controllers/resumeController");
-
-const { protect } = require("../middleware/authMiddleware");
+const protect = require("../middleware/authMiddleware");
 
 const upload = require("../middleware/uploadMiddleware");
+
+const resumeController = require("../controllers/resumeController");
 
 router.post(
   "/upload",
   protect,
   upload.single("resume"),
-  uploadResume
+  resumeController.uploadResume
 );
+
 router.get(
   "/my-resumes",
   protect,
-  getUserResumes
+  resumeController.getMyResumes
 );
+
 router.delete(
-    "/:id",
-    protect,
-    deleteResume
+  "/:id",
+  protect,
+  resumeController.deleteResume
 );
+
 module.exports = router;
