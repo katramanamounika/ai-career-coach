@@ -9,13 +9,13 @@ import {
 const Dashboard = () => {
   const hasData = false;
   return (
-    <div className="flex flex-col lg:flex-row bg-gradient-to-br from-slate-950 via-slate-900 to-black-950 text-white min-h-screen">
+    <div className="flex bg-gradient-to-br from-slate-950 via-slate-900 to-black-950 text-white min-h-screen">
 
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row-1 p-10">
+      <div className="flex-1 p-10">
 
         {/* Heading */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 mb-10">
