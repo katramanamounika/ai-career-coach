@@ -5,8 +5,14 @@ import {
   Mic,
   BarChart3,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
   const hasData = false;
   return (
     <div className="flex flex-col lg:flex-row bg-gradient-to-br from-slate-950 via-slate-900 to-black-950 text-white min-h-screen">
@@ -27,6 +33,16 @@ const Dashboard = () => {
   <p className="text-gray-400 text-lg">
     Track your progress and improve your career skills.
   </p>
+
+</div>
+<div className="flex justify-end mb-6">
+
+  <button
+    onClick={handleLogout}
+    className="bg-red-500 hover:bg-red-400 text-white px-5 py-2 rounded-xl"
+  >
+    Logout
+  </button>
 
 </div>
 
