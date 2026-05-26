@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthButton from "../common/AuthButton";
+import { useNavigate } from "react-router-dom";
+
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -9,6 +11,7 @@ const RegisterForm = () => {
     password: "",
     confirmPassword: "",
   });
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -107,6 +110,7 @@ setTimeout(() => {
   setLoading(false);
 
   toast.success("Registration Successful");
+  navigate("/dashboard");
 
 }, 2000);
 };

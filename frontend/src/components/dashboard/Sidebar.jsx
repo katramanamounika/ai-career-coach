@@ -1,4 +1,7 @@
-import { NavLink } from "react-router-dom";
+import {
+  NavLink,
+  useNavigate,
+} from "react-router-dom";
 
 import {
   Home,
@@ -9,6 +12,7 @@ import {
 } from "lucide-react";
 
 const Sidebar = () => {
+    const navigate = useNavigate();
   return (
     <div className="w-full lg:w-64 min-h-screen bg-slate-900 border-r border-slate-800 p-6">
 
@@ -85,13 +89,16 @@ const Sidebar = () => {
       {/* Logout */}
       <div className="mt-20">
 
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-slate-800 transition duration-300 w-full">
+        <button
+  onClick={() => navigate("/")}
+  className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-slate-800 transition duration-300 w-full"
+>
 
-          <LogOut size={20} />
+  <LogOut size={20} />
 
-          <span>Logout</span>
+  <span>Logout</span>
 
-        </button>
+</button>
 
       </div>
 
