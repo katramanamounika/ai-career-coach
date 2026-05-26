@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API from "../../api/authApi";
 import toast from "react-hot-toast";
 import AuthButton from "../common/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,7 +12,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
   let newErrors = {};
@@ -20,7 +21,7 @@ const LoginForm = () => {
   if (!email) {
     newErrors.email = "Email is required";
   } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
+    !/\S+@\S+\.\S+/i.test(email)
   ) {
     newErrors.email =
       "Invalid email address";
@@ -62,29 +63,49 @@ const LoginForm = () => {
 
   setLoading(true);
 
-setTimeout(() => {
+try {
 
-  console.log({
-    email,
-    password,
-  });
-
+  const response = await API.post(
+    "/login",
+    {
+      email,
+      password,
+    }
+  );
+  
   setLoading(false);
 
-  const success = true;
-
-if (success) {
   toast.success("Login Successful");
+
+  console.log(response.data);
+
+  // Save token
+  localStorage.setItem(
+    "token",
+    response.data.token
+  );
+
+  // Save user
+  localStorage.setItem(
+    "user",
+    JSON.stringify(response.data.user)
+  );
 
   setTimeout(() => {
     navigate("/dashboard");
   }, 1000);
 
-} else {
-  toast.error("Invalid Credentials");
-}
+} catch (error) {
 
-}, 2000);
+  setLoading(false);
+
+  toast.error(
+    error.response?.data?.message ||
+    "Login Failed"
+  );
+
+  console.log(error);
+}
 };
   return (
     <form
