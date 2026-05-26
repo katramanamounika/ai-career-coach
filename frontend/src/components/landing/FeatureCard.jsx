@@ -4,7 +4,7 @@ export default function FeatureCard({
   description,
 }) {
   return (
-    <div className="bg-[#050816]/90 border border-cyan-500/10 rounded-3xl p-8 hover:border-cyan-400/40 transition duration-300 hover:-translate-y-2">
+    <div className="bg-[#050816]/90 border border-cyan-500/40 rounded-3xl p-8 hover:border-cyan-400 transition duration-300 hover:-translate-y-2">
 
       {/* Icon */}
       <div className="text-4xl mb-8 text-cyan-400">

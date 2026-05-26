@@ -1,26 +1,29 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
+
+  const navigate = useNavigate();
+
   return (
-    <section className="min-h-[70vh] flex items-center px-6 md:px-10">
+    <section id="home" className="min-h-[92vh] flex items-center">
 
-      <div className="w-full max-w-[1350px] mx-auto  px-8 md:px-16">
+      <div className="w-[88%] max-w-[1400px] mx-auto">
 
-        <div className="max-w-[760px]">
+        <div className="max-w-[620px]">
 
-          <h1 className="text-5xl md:text-6xl lg:text-[72px] leading-tight lg:leading-[82px] font-bold tracking-tight">
+          <h2 className="text-5xl md:text-6xl lg:text-[72px] leading-none lg:leading-[72px] font-bold tracking-tight">
 
             Your AI-Powered
 
             <br />
 
-            <span className="bg-linear-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               Career Companion
             </span>
 
-          </h1>
+          </h2>
 
-          <p className="mt-6 text-gray-400 text-xl md:text-2xl leading-relaxed max-w-[700px]">
+          <p className="mt-4 text-gray-400 text-xl md:text-2xl leading-relaxed max-w-[700px]">
 
             From resume analysis to mock interviews,
             we help you get placed in your dream role.
@@ -28,21 +31,21 @@ export default function HeroSection() {
           </p>
 
           {/* Buttons */}
-          <div className="flex gap-6 mt-8 flex-wrap">
+          <div className="flex gap-6 mt-8">
 
-            <Link
-              to="/register"
-              className="bg-linear-to-r from-cyan-400 to-blue-500 px-10 py-4 rounded-2xl text-black text-lg font-bold hover:scale-105 transition inline-flex items-center justify-center"
+            <button
+              onClick={() => navigate("/register")}
+              className="bg-gradient-to-r from-cyan-400 to-blue-500 px-7 py-3 rounded-xl text-black text-lg font-semibold hover:scale-105 transition duration-300"
             >
-              Get Started
-            </Link>
+             Get Started
+            </button>
 
-            <Link
-              to="/login"
-              className="border border-cyan-500/30 text-cyan-400 px-10 py-4 rounded-2xl text-lg hover:bg-cyan-500/10 transition inline-flex items-center justify-center"
+            <button
+              onClick={() => navigate("/register")}
+              className="border border-cyan-500/30 text-cyan-400 px-7 py-3 rounded-xl text-lg hover:bg-cyan-500/10 transition duration-300"
             >
-              ▶ Try Mock Interview
-            </Link>
+            ▶ Try Mock Interview
+            </button>
 
           </div>
 

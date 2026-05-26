@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthButton from "../common/AuthButton";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
   e.preventDefault();
@@ -74,6 +75,11 @@ setTimeout(() => {
 
 if (success) {
   toast.success("Login Successful");
+
+  setTimeout(() => {
+    navigate("/dashboard");
+  }, 1000);
+
 } else {
   toast.error("Invalid Credentials");
 }
