@@ -1,29 +1,101 @@
 const express = require("express");
+
 const router = express.Router();
 
-const protect = require("../middleware/authMiddleware");
+const multer = require("multer");
 
-const upload = require("../middleware/uploadMiddleware");
+const { spawn } = require("child_process");
 
-const resumeController = require("../controllers/resumeController");
+const upload = multer({
+  dest: "uploads/"
+});
 
 router.post(
-  "/upload",
-  protect,
+  "/analyze",
   upload.single("resume"),
-  resumeController.uploadResume
-);
+  async (req, res) => {
 
-router.get(
-  "/my-resumes",
-  protect,
-  resumeController.getMyResumes
-);
+    try {
 
-router.delete(
-  "/:id",
-  protect,
-  resumeController.deleteResume
+      const role = req.body.role;
+
+      const resumePath = req.file.path;
+
+      const pythonProcess = spawn(
+        "python",
+        [
+          "./resume-analyzer/main.py",
+          resumePath,
+          role
+        ]
+      );
+
+      let result = "";
+
+      let errorOutput = "";
+
+      pythonProcess.stdout.on(
+        "data",
+        (data) => {
+
+          result += data.toString();
+        }
+      );
+
+      pythonProcess.stderr.on(
+        "data",
+        (data) => {
+
+          errorOutput += data.toString();
+        }
+      );
+
+      pythonProcess.on(
+        "close",
+        (code) => {
+
+          console.log("Python Output:", result);
+
+          console.log("Python Error:", errorOutput);
+
+          if (errorOutput) {
+
+            return res.status(500).json({
+              error: errorOutput
+            });
+          }
+
+          try {
+
+            const parsedData =
+              JSON.parse(result);
+
+            res.json(parsedData);
+
+          } catch (error) {
+
+            console.log(
+              "JSON Parse Error:",
+              error
+            );
+
+            res.status(500).json({
+              error:
+                "Invalid JSON returned from Python"
+            });
+          }
+        }
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+        error: "Server Error"
+      });
+    }
+  }
 );
 
 module.exports = router;
