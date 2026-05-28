@@ -79,13 +79,59 @@ const MockInterview = () => {
                 </option>
 
                 <option>
-                  AI Engineer
+                  Full Stack Developer
+                </option>
+
+                <option>
+                  Java Developer
+                </option>
+
+                <option>
+                  Python Developer
                 </option>
 
                 <option>
                   Data Analyst
                 </option>
 
+                <option>
+                  Data Scientist
+                </option>
+
+                <option>
+                  Software Engineer
+                </option>
+
+                <option>
+                  Devops Engineer
+                </option>
+                <option>
+                  AI-ML Engineer
+                </option>
+                  Cybersecurity Engineer
+
+                <option>
+                  Mobile App Developer
+                </option>
+                <option>
+                  Cloud Engineer
+                </option>
+                  
+                <option>
+                  QA Engineer
+                </option>
+                <option>
+                  BlockChain Developer
+                </option>
+                <option>
+                  UI UX Designer
+                </option>
+                <option>
+                  Game Designer
+                </option>
+                <option>
+                  Embedded Engineer
+                </option>
               </select>
 
             </div>

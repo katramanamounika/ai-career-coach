@@ -27,7 +27,7 @@ const ResumeAnalyzer = () => {
 
       // Replace with backend API
       const response = await fetch(
-        "http://localhost:5000/api/analyze-resume",
+        "http://127.0.0.1:8000/analyze",
         {
           method: "POST",
           body: formData,
