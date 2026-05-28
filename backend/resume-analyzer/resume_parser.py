@@ -1,13 +1,31 @@
-import fitz
+import pdfplumber
 
-def extract_resume_text(pdf_path):
+from docx import Document
+
+def extract_text(file_path):
 
     text = ""
 
-    doc = fitz.open(pdf_path)
+    if file_path.endswith(".pdf"):
 
-    for page in doc:
+        with pdfplumber.open(file_path) as pdf:
 
-        text += page.get_text()
+            for page in pdf.pages:
+
+                extracted =page.extract_text()
+
+                if extracted:
+                    text += extracted
+
+    elif file_path.endswith(".docx"):
+
+        doc = Document(file_path)
+
+        text = "\n".join(
+            [
+                para.text
+                for para in doc.paragraphs
+            ]
+        )
 
     return text
