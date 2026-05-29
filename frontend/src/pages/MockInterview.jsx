@@ -62,6 +62,8 @@ const MockInterview = () => {
   return (
 
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white p-8 md:p-12">
+    <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-black text-white p-8 md:p-12">
+
 
       {/* Header */}
       <div className="mb-10">
@@ -135,6 +137,13 @@ const MockInterview = () => {
                 </option>
 
                 <option>
+
+
+                  Java Developer
+                </option>
+
+                <option>
+
                   Python Developer
                 </option>
 
@@ -142,6 +151,44 @@ const MockInterview = () => {
                   Data Analyst
                 </option>
 
+                <option>
+                  Data Scientist
+                </option>
+
+                <option>
+                  Software Engineer
+                </option>
+
+                <option>
+                  Devops Engineer
+                </option>
+                <option>
+                  AI-ML Engineer
+                </option>
+                  Cybersecurity Engineer
+
+                <option>
+                  Mobile App Developer
+                </option>
+                <option>
+                  Cloud Engineer
+                </option>
+                  
+                <option>
+                  QA Engineer
+                </option>
+                <option>
+                  BlockChain Developer
+                </option>
+                <option>
+                  UI UX Designer
+                </option>
+                <option>
+                  Game Designer
+                </option>
+                <option>
+                  Embedded Engineer
+                </option>
               </select>
 
             </div>

@@ -1,18 +1,66 @@
 const express = require("express");
-
 const router = express.Router();
 
 const multer = require("multer");
-
+const path = require("path");
 const { spawn } = require("child_process");
 
-const upload = multer({
-  dest: "uploads/"
+const {
+  uploadResume,
+} = require("../controllers/resumeController");
+
+
+// STORAGE SETTINGS
+const storage = multer.diskStorage({
+
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+
 });
 
+
+// FILE FILTER
+const fileFilter = (req, file, cb) => {
+
+  if (file.mimetype === "application/pdf") {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF files allowed"), false);
+  }
+
+};
+
+
+// MULTER CONFIG
+const upload = multer({
+
+  storage: storage,
+  fileFilter: fileFilter
+
+});
+
+
+// UPLOAD ROUTE
 router.post(
+
+  "/upload",
+  upload.single("resume"),
+  uploadResume
+
+);
+
+
+// ANALYZE ROUTE
+router.post(
+
   "/analyze",
   upload.single("resume"),
+
   async (req, res) => {
 
     try {
@@ -31,7 +79,6 @@ router.post(
       );
 
       let result = "";
-
       let errorOutput = "";
 
       pythonProcess.stdout.on(
@@ -39,6 +86,7 @@ router.post(
         (data) => {
 
           result += data.toString();
+
         }
       );
 
@@ -47,6 +95,7 @@ router.post(
         (data) => {
 
           errorOutput += data.toString();
+
         }
       );
 
@@ -63,6 +112,7 @@ router.post(
             return res.status(500).json({
               error: errorOutput
             });
+
           }
 
           try {
@@ -83,6 +133,7 @@ router.post(
               error:
                 "Invalid JSON returned from Python"
             });
+
           }
         }
       );
@@ -94,6 +145,7 @@ router.post(
       res.status(500).json({
         error: "Server Error"
       });
+
     }
   }
 );
