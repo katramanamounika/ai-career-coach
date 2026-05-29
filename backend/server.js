@@ -6,10 +6,15 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
-const atsRoutes=require("./routes/atsRoutes");
+const atsRoutes = require("./routes/atsRoutes");
+
+// ✅ ADD THIS LINE (NEW)
+const interviewRoutes = require("./routes/interviewRoutes");
+
 const app = express();
 
 connectDB();
+console.log(process.env.GEMINI_API_KEY);
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -18,9 +23,14 @@ app.use(cors({
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
-app.use("/api/ats",atsRoutes);
+app.use("/api/ats", atsRoutes);
+
+// ✅ ADD THIS LINE (NEW)
+app.use("/api/interview", interviewRoutes);
+
 app.get("/", (req, res) => {
   res.send("API Running");
 });

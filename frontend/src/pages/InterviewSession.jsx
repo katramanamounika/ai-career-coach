@@ -1,226 +1,236 @@
-import {
-  Clock,
-  Mic,
-  Brain,
-  Camera,
-} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Clock, Brain, Mic } from "lucide-react";
 
 const InterviewSession = () => {
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { questions, role, difficulty } = location.state || {};
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(300);
+  const [answer, setAnswer] = useState("");
+  const [allAnswers, setAllAnswers] = useState([]);
+  const [isEnded, setIsEnded] = useState(false);
+
+  const videoRef = useRef(null);
+
+  const currentQuestion = questions?.[currentQuestionIndex];
+
+  // 🎤 Speak Question
+  useEffect(() => {
+    if (!currentQuestion) return;
+
+    const speech = new SpeechSynthesisUtterance(currentQuestion);
+    speech.lang = "en-US";
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
+
+  }, [currentQuestion]);
+
+  // ⏱ TIMER
+  useEffect(() => {
+    const timer = setInterval(() => {
+
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          finishInterview(allAnswers);
+          return 0;
+        }
+        return prev - 1;
+      });
+
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // 📷 CAMERA
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+    } catch (err) {
+      console.log("Camera error:", err);
+    }
+  };
+
+  // 🎤 SPEECH TO TEXT
+  const startListening = () => {
+
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Speech recognition not supported");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+
+    recognition.onresult = (event) => {
+      setAnswer(event.results[0][0].transcript);
+    };
+
+    recognition.start();
+  };
+
+  // ➡ NEXT QUESTION
+  const nextQuestion = () => {
+
+    const updated = [
+      ...allAnswers,
+      {
+        question: currentQuestion,
+        answer: answer || "No answer provided",
+      }
+    ];
+
+    setAllAnswers(updated);
+    setAnswer("");
+
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    } else {
+      finishInterview(updated);
+    }
+  };
+
+  // 🧠 FINAL SUBMIT WITH AI SCORING
+  const finishInterview = async (finalAnswersParam) => {
+
+    const finalAnswers =
+      finalAnswersParam || allAnswers;
+
+    if (isEnded) return;
+    setIsEnded(true);
+
+    try {
+
+      const res = await axios.post(
+        "http://localhost:5000/api/interview/save",
+        {
+          role,
+          difficulty,
+          questions: finalAnswers.map(a => a.question),
+          answers: finalAnswers.map(a => a.answer),
+        }
+      );
+
+      navigate("/interview-report", {
+        state: {
+          answers: finalAnswers,
+          score: res.data.score || 0,
+          feedback: res.data.feedback || []
+        }
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      navigate("/interview-report", {
+        state: {
+          answers: finalAnswers,
+          score: 0,
+          feedback: []
+        }
+      });
+    }
+  };
+
+  if (!questions) {
+    return <div>No questions found</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white p-8 md:p-12">
+
+    <div className="min-h-screen bg-black text-white p-6">
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
+      <div className="flex justify-between mb-6">
 
-        <div>
+        <h1 className="text-2xl font-bold">AI Interview</h1>
 
-          <h1 className="text-5xl font-bold mb-3">
-            AI Interview Session
-          </h1>
-
-          <p className="text-gray-400 text-lg">
-            Answer the interview questions confidently.
-          </p>
-
-        </div>
-
-        {/* Timer */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl px-6 py-4 flex items-center gap-3 shadow-xl">
-
-          <Clock className="text-cyan-400" />
-
-          <span className="text-2xl font-bold">
-            05:00
+        <div className="flex items-center gap-2">
+          <Clock />
+          <span>
+            {Math.floor(timeLeft / 60)}:
+            {(timeLeft % 60).toString().padStart(2, "0")}
           </span>
-
-        </div>
-
-      </div>
-
-      {/* Main Layout */}
-<div className="grid lg:grid-cols-12 gap-6">
-
-  {/* Left Main Section */}
-  <div className="lg:col-span-8">
-
-    {/* Question Card */}
-    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl mb-6">
-
-      <div className="flex items-center gap-3 mb-6">
-
-        <div className="bg-cyan-500/20 p-3 rounded-2xl">
-          <Brain className="text-cyan-400" />
-        </div>
-
-        <div>
-
-          <h2 className="text-2xl font-bold">
-            Interview Question
-          </h2>
-
-          <p className="text-gray-400 text-sm">
-            AI-generated technical question
-          </p>
-
         </div>
 
       </div>
 
       {/* Question */}
-      <div className="bg-slate-800 rounded-2xl p-6">
+      <div className="bg-gray-900 p-5 rounded-xl mb-4">
+        <Brain />
+        <h2 className="mt-2">{currentQuestion}</h2>
+      </div>
 
-        <p className="text-lg leading-relaxed">
+      {/* ANSWER */}
+      <textarea
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+        className="w-full h-40 p-3 bg-white text-black rounded-xl"
+        placeholder="Type your answer..."
+        spellCheck={false}
+      />
 
-          Explain a challenging project you worked on
-          and how you solved technical problems.
+      {/* BUTTONS */}
+      <div className="flex gap-3 mt-3">
 
-        </p>
+        <button
+          onClick={startListening}
+          disabled={isEnded}
+          className="bg-blue-500 px-4 py-2 rounded"
+        >
+          <Mic /> Speak
+        </button>
+
+        <button
+          onClick={nextQuestion}
+          disabled={isEnded}
+          className="bg-green-500 px-4 py-2 rounded"
+        >
+          Next
+        </button>
+
+        <button
+          onClick={finishInterview}
+          className="bg-red-500 px-4 py-2 rounded"
+        >
+          End
+        </button>
+
+        <button
+          onClick={startCamera}
+          className="bg-cyan-500 px-4 py-2 rounded"
+        >
+          Start Camera
+        </button>
 
       </div>
 
-    </div>
-
-    {/* Video Grid */}
-    <div className="grid md:grid-cols-2 gap-4 mb-6">
-
-      {/* Your Camera */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl h-64 flex flex-col items-center justify-center">
-
-        <div className="w-24 h-24 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4">
-
-          <Camera
-            className="text-cyan-400"
-            size={40}
-          />
-
-        </div>
-
-        <p className="text-xl font-semibold">
-          Your Camera
-        </p>
-
-        <p className="text-gray-400 text-sm mt-2">
-          Camera preview will appear here
-        </p>
-
-      </div>
-
-      {/* AI Interviewer */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl h-64 flex flex-col items-center justify-center">
-
-        <div className="w-24 h-24 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4">
-
-          <Brain
-            className="text-cyan-400"
-            size={40}
-          />
-
-        </div>
-
-        <p className="text-xl font-semibold">
-          AI Interviewer
-        </p>
-
-        <p className="text-gray-400 text-sm mt-2">
-          Asking interview questions
-        </p>
-
-      </div>
+      {/* CAMERA */}
+      <video
+        ref={videoRef}
+        autoPlay
+        className="w-64 mt-5 rounded-xl"
+      />
 
     </div>
-
-    {/* Controls */}
-    <div className="flex items-center gap-4">
-
-      <button className="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-6 py-3 rounded-xl transition text-sm">
-
-        Camera On
-
-      </button>
-
-      <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-6 py-3 rounded-xl transition text-sm">
-
-        Next
-
-      </button>
-
-      <button className="bg-red-500 hover:bg-red-400 text-white font-semibold px-6 py-3 rounded-xl transition text-sm">
-
-        End
-
-      </button>
-
-    </div>
-
-  </div>
-
-  {/* Right Side Panel */}
-  <div className="lg:col-span-4 space-y-6">
-
-    {/* Progress */}
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-
-      <h2 className="text-xl font-bold mb-5">
-        Interview Progress
-      </h2>
-
-      <div className="space-y-5">
-
-        <div>
-
-          <div className="flex justify-between text-sm mb-2">
-            <span>Questions</span>
-            <span>2 / 5</span>
-          </div>
-
-          <div className="w-full bg-slate-800 rounded-full h-2">
-            <div className="bg-cyan-400 h-2 rounded-full w-[40%]"></div>
-          </div>
-
-        </div>
-
-        <div>
-
-          <div className="flex justify-between text-sm mb-2">
-            <span>Confidence</span>
-            <span>80%</span>
-          </div>
-
-          <div className="w-full bg-slate-800 rounded-full h-2">
-            <div className="bg-green-400 h-2 rounded-full w-[80%]"></div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    {/* Tips */}
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-
-      <h2 className="text-xl font-bold mb-4">
-        Quick Tips
-      </h2>
-
-      <div className="space-y-3 text-sm text-gray-300">
-
-        <p>✅ Maintain eye contact</p>
-
-        <p>✅ Answer confidently</p>
-
-        <p>✅ Keep answers structured</p>
-
-        <p>✅ Stay calm</p>
-
-      </div>
-
-    </div>
-
-  </div>
-  </div>
-  </div>      
-
   );
 };
 
