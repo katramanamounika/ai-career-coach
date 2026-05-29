@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import {
   Mic,
   Brain,
@@ -8,10 +9,58 @@ import {
 } from "lucide-react";
 
 const MockInterview = () => {
+
   const [role, setRole] = useState("");
   const [difficulty, setDifficulty] = useState("");
 
+  const navigate = useNavigate();
+
+  const startInterview = async () => {
+
+    if (!role || !difficulty) {
+
+      alert("Please select role and difficulty");
+
+      return;
+    }
+
+    try {
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/mock-interview/${role}/${difficulty}`
+      );
+
+      const data = await response.json();
+
+      console.log(data);
+
+      if (data.success) {
+
+        navigate("/interview-session", {
+          state: {
+            questions: data.questions,
+            role,
+            difficulty
+          }
+        });
+
+      } else {
+
+        alert("Questions not found");
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Backend connection failed");
+
+    }
+  };
+
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white p-8 md:p-12">
 
       {/* Header */}
@@ -43,6 +92,7 @@ const MockInterview = () => {
               </div>
 
               <div>
+
                 <h2 className="text-2xl font-bold">
                   Interview Setup
                 </h2>
@@ -50,6 +100,7 @@ const MockInterview = () => {
                 <p className="text-gray-400 text-sm">
                   Configure your interview
                 </p>
+
               </div>
 
             </div>
@@ -66,6 +117,7 @@ const MockInterview = () => {
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-700 rounded-2xl p-4 outline-none"
               >
+
                 <option value="">
                   Choose Role
                 </option>
@@ -79,7 +131,11 @@ const MockInterview = () => {
                 </option>
 
                 <option>
-                  AI Engineer
+                  Full Stack Developer
+                </option>
+
+                <option>
+                  Python Developer
                 </option>
 
                 <option>
@@ -104,6 +160,7 @@ const MockInterview = () => {
                 }
                 className="w-full bg-slate-800 border border-slate-700 rounded-2xl p-4 outline-none"
               >
+
                 <option value="">
                   Select Difficulty
                 </option>
@@ -117,11 +174,13 @@ const MockInterview = () => {
             </div>
 
             {/* Button */}
-            <Link to="/interview-session">
-            <button className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-2xl transition duration-300">
-                Start Interview
+            <button
+              onClick={startInterview}
+              className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-2xl transition duration-300"
+            >
+              Start Interview
             </button>
-            </Link>
+
           </div>
 
         </div>
@@ -183,24 +242,6 @@ const MockInterview = () => {
                 </p>
 
               </div>
-
-            </div>
-
-          </div>
-
-          {/* Sample Question */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
-
-            <h2 className="text-2xl font-bold mb-6">
-              Sample Interview Question
-            </h2>
-
-            <div className="bg-slate-800 rounded-2xl p-6">
-
-              <p className="text-lg leading-relaxed">
-                “Can you explain a challenging project
-                you worked on and how you solved the problem?”
-              </p>
 
             </div>
 
