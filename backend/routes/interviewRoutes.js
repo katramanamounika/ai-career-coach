@@ -4,12 +4,21 @@ const { generateScore } = require("../services/aiService");
 
 const router = express.Router();
 
-// 🤖 SAVE INTERVIEW (FIXED AI SCORING)
+// SAVE INTERVIEW
 router.post("/save", async (req, res) => {
+
+  console.log("SAVE API HIT");
+  console.log(req.body);
 
   try {
 
-    const { role, difficulty, questions, answers } = req.body;
+    const {
+      userId,
+      role,
+      difficulty,
+      questions,
+      answers
+    } = req.body;
 
     let totalScore = 0;
     let feedbackList = [];
@@ -19,20 +28,23 @@ router.post("/save", async (req, res) => {
       const question = questions[i];
       const answer = answers[i];
 
-      // 🚨 Handle empty answers
       if (!answer || answer.trim() === "") {
+
         feedbackList.push({
           question,
           answer: "",
           score: 0,
           feedback: "No answer provided"
         });
+
         continue;
       }
 
-      const aiResponse = await generateScore(question, answer);
+      const aiResponse = await generateScore(
+        question,
+        answer
+      );
 
-      // 🔥 SAFE SCORE EXTRACTION
       let score = 0;
 
       const scoreMatch =
@@ -43,10 +55,10 @@ router.post("/save", async (req, res) => {
         score = parseInt(scoreMatch[1]);
       }
 
-      // 🔥 SAFE FEEDBACK EXTRACTION
       let feedback = "No feedback";
 
-      const feedbackMatch = aiResponse.match(/Feedback:\s*(.*)/i);
+      const feedbackMatch =
+        aiResponse.match(/Feedback:\s*(.*)/i);
 
       if (feedbackMatch) {
         feedback = feedbackMatch[1].trim();
@@ -63,21 +75,52 @@ router.post("/save", async (req, res) => {
     }
 
     const interview = new Interview({
+
+      userId,
+
       role,
       difficulty,
       questions,
       answers,
       score: totalScore
+
     });
 
     await interview.save();
-
+console.log("INTERVIEW SAVED");
+console.log(interview);
     res.status(201).json({
-      message: "Interview saved with AI scoring",
+      success: true,
+      message: "Interview saved successfully",
       score: totalScore,
       feedback: feedbackList,
       interview
     });
+
+  } catch (error) {
+
+    console.log("SAVE ERROR:");
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+
+  }
+
+});
+
+// GET ALL INTERVIEWS
+router.get("/all", async (req, res) => {
+
+  try {
+
+    const interviews =
+      await Interview.find()
+        .sort({ createdAt: -1 });
+
+    res.json(interviews);
 
   } catch (error) {
 
@@ -86,16 +129,7 @@ router.post("/save", async (req, res) => {
     });
 
   }
-});
 
-// 📊 GET ALL INTERVIEWS
-router.get("/all", async (req, res) => {
-  try {
-    const interviews = await Interview.find().sort({ createdAt: -1 });
-    res.json(interviews);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 module.exports = router;

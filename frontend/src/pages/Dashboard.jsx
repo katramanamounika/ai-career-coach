@@ -51,7 +51,7 @@ const Dashboard = () => {
 
   /* EXISTING USER DASHBOARD */
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 
     <DashboardCard
       title="Resume Score"
@@ -76,7 +76,13 @@ const Dashboard = () => {
       buttonText="View Analytics"
       link="/analytics"
     />
-
+    <DashboardCard
+  title="Interview History"
+  value="📋"
+  description="View previous interviews"
+  buttonText="Open History"
+  link="/interview-history"
+/>
   </div>
 
 ) : (

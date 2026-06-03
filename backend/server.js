@@ -10,7 +10,7 @@ const atsRoutes = require("./routes/atsRoutes");
 
 // ✅ ADD THIS LINE (NEW)
 const interviewRoutes = require("./routes/interviewRoutes");
-
+const interviewHistoryRoutes = require("./routes/interviewHistoryRoutes");
 const app = express();
 
 connectDB();
@@ -30,13 +30,14 @@ app.use("/api/ats", atsRoutes);
 
 // ✅ ADD THIS LINE (NEW)
 app.use("/api/interview", interviewRoutes);
-
+app.use("/api/interview-history",interviewHistoryRoutes);
 app.get("/", (req, res) => {
   res.send("API Running");
 });
 
 const PORT = process.env.PORT || 5000;
-
+console.log("SERVER FILE IS RUNNING");
+console.log("Interview History Routes:", interviewHistoryRoutes);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

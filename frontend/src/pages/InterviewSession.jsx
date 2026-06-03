@@ -117,10 +117,11 @@ const InterviewSession = () => {
     setIsEnded(true);
 
     try {
-
+const user = JSON.parse(localStorage.getItem("user"));
       const res = await axios.post(
-        "http://localhost:5000/api/interview/save",
-        {
+  "http://localhost:5000/api/interview/save",
+  {
+    userId: user._id,
           role,
           difficulty,
           questions: finalAnswers.map(a => a.question),
@@ -208,7 +209,7 @@ const InterviewSession = () => {
         </button>
 
         <button
-          onClick={finishInterview}
+          onClick={()=>finishInterview()}
           className="bg-red-500 px-4 py-2 rounded"
         >
           End
