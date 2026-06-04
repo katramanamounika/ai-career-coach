@@ -6,6 +6,7 @@ import {
   Mic,
   BarChart3,
   LogOut,
+  History,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -79,6 +80,21 @@ const Sidebar = () => {
           <BarChart3 size={20} />
           <span>Analytics</span>
         </NavLink>
+
+        {/* Interview History */}
+<NavLink
+  to="/interview-history"
+  className={({ isActive }) =>
+    `flex items-center gap-3 px-4 py-3 rounded-xl transition duration-300 ${
+      isActive
+        ? "bg-cyan-500 text-black font-semibold shadow-lg"
+        : "text-white hover:bg-slate-800"
+    }`
+  }
+>
+  <History size={20} />
+  <span>Interview History</span>
+</NavLink>
 
       </div>
 

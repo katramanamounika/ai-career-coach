@@ -22,6 +22,7 @@ import InterviewSession from "../pages/InterviewSession";
 
 import InterviewReport from "../pages/InterviewReport";
 
+import InterviewHistory from "../pages/InterviewHistory";
 export default function AppRoutes() {
 
   return (
@@ -81,7 +82,10 @@ export default function AppRoutes() {
         path="/interview-report"
         element={<InterviewReport />}
       />
-
+      <Route
+      path="/interview-history"
+      element={<InterviewHistory/>}
+      />
       <Route
         path="*"
         element={<div className="text-white p-10">Page Not Found</div>}

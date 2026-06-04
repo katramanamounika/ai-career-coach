@@ -165,8 +165,9 @@ const MockInterview = () => {
                 <option>
                   AI-ML Engineer
                 </option>
-                  Cybersecurity Engineer
-
+                <option>
+                   Cybersecurity Engineer
+                </option>
                 <option>
                   Mobile App Developer
                 </option>
@@ -298,6 +299,7 @@ const MockInterview = () => {
 
       </div>
 
+    </div>
     </div>
   );
 };
