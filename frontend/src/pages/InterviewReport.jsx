@@ -12,7 +12,7 @@ const InterviewReport = () => {
 
   useEffect(() => {
     if (!location.state?.answers) {
-      navigate("/mockinterview");
+      navigate("/mock-interview");
     }
   }, []);
 
@@ -80,7 +80,7 @@ const InterviewReport = () => {
       </div>
 
       <button
-        onClick={() => navigate("/mockinterview")}
+        onClick={() => navigate("/mock-interview")}
         className="mt-10 bg-cyan-500 text-black px-6 py-2 rounded-xl"
       >
         Back
