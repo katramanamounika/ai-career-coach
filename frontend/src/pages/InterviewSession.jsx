@@ -133,7 +133,9 @@ const user = JSON.parse(localStorage.getItem("user"));
         state: {
           answers: finalAnswers,
           score: res.data.score || 0,
-          feedback: res.data.feedback || []
+          feedback: res.data.feedback || [],
+          role,
+          difficulty
         }
       });
 
@@ -145,7 +147,8 @@ const user = JSON.parse(localStorage.getItem("user"));
         state: {
           answers: finalAnswers,
           score: 0,
-          feedback: []
+          feedback: [],
+          
         }
       });
     }
