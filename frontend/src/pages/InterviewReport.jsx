@@ -16,150 +16,324 @@ const downloadPDF = () => {
   const doc = new jsPDF();
 
   const today = new Date().toLocaleDateString();
-const answeredQuestions =
-  answers.filter(
-    a => a.answer !== "No answer provided"
-  ).length;
+
+  const user =
+    JSON.parse(localStorage.getItem("user"));
+
+  const answeredQuestions =
+    answers.filter(
+      a => a.answer !== "No answer provided"
+    ).length;
+
+  const unansweredQuestions =
+    answers.length - answeredQuestions;
+
+  const percentage =
+    answers.length > 0
+      ? (score / (answers.length * 10)) * 100
+      : 0;
+
   let level = "Beginner";
 
-if (score >= 70) {
-  level = "Excellent";
-}
-else if (score >= 50) {
-  level = "Good";
-}
-else if (score >= 30) {
-  level = "Average";
-}
+  if (score >= 70) {
+    level = "Excellent";
+  }
+  else if (score >= 50) {
+    level = "Good";
+  }
+  else if (score >= 30) {
+    level = "Average";
+  }
+
+
   // Main Title
-  doc.setFontSize(22);
+    doc.setFontSize(22);
   doc.text("AI CAREER COACH", 20, 20);
 
-  // Subtitle
   doc.setFontSize(18);
   doc.text("Interview Performance Report", 20, 32);
-doc.line(20, 38, 190, 38);
-  // Candidate Details
+
+  doc.line(20, 38, 190, 38);
+
   doc.setFontSize(12);
 
-  doc.text(`Date: ${today}`, 20, 50);
+  doc.text(
+    `Candidate: ${user?.name || "User"}`,
+    20,
+    50
+  );
 
   doc.text(
-    `Role: ${role}`,
+    `Date: ${today}`,
     20,
     60
   );
 
   doc.text(
-    `Difficulty: ${difficulty}`,
+    `Role: ${role}`,
     20,
     70
   );
 
   doc.text(
-    `Overall Score: ${score ?? 0}`,
+    `Difficulty: ${difficulty}`,
     20,
     80
   );
-doc.setFontSize(14);
-doc.text("SUMMARY", 20, 95);
 
-doc.setFontSize(12);
-
-doc.text(
-  `Total Questions: ${answers.length}`,
+  doc.text(
+  `Total Interview Score: ${score}`,
   20,
-  105
+  90
 );
 
+  doc.text(
+    `Percentage: ${percentage.toFixed(1)}%`,
+    20,
+    100
+  );
 
-doc.text(
-  `Answered Questions: ${answeredQuestions}`,
-  20,
-  115
-);
-doc.text(
-  `Performance Level: ${level}`,
-  20,
-  125
-);
-  let y = 145;
+
+   doc.line(20, 110, 190, 110);
+
+  doc.setFontSize(16);
+  doc.text("CANDIDATE SUMMARY", 20, 125);
+  
+  doc.setFontSize(12);
+  doc.text(
+    `Maximum Possible Score: ${answers.length * 10}`,
+    20,
+    170
+  );
+
+  doc.text(
+    `Questions Attempted: ${answeredQuestions}/${answers.length}`,
+    20,
+    140
+  );
+
+  doc.text(
+    `Questions Skipped: ${unansweredQuestions}`,
+    20,
+    150
+  );
+
+  doc.text(
+    `Performance Level: ${level}`,
+    20,
+    160
+  );
+  let y = 180;
 
   // Questions start here
-  answers.forEach((item, index) => {
+    answers.forEach((item, index) => {
+      
 
-  doc.line(20, y - 5, 190, y - 5);
+    doc.setFontSize(14);
+    doc.text(
+      `Question ${index + 1}`,
+      20,
+      y
+    );
 
-  doc.setFontSize(14);
-  doc.text(`Question ${index + 1}`, 20, y);
+    y += 10;
 
-  y += 10;
+    doc.setFontSize(12);
 
-  doc.setFontSize(12);
+    doc.text(
+      "Question:",
+      20,
+      y
+    );
 
-  // Question
-  doc.text("Question:", 20, y);
-  y += 8;
-
-  doc.text(
-    doc.splitTextToSize(item.question, 160),
-    20,
-    y
-  );
-
-  y += 15;
-
-  // Answer
-  doc.text("Answer:", 20, y);
-  y += 8;
-
-  doc.text(
-    doc.splitTextToSize(
-      item.answer || "No answer provided",
-      160
-    ),
-    20,
-    y
-  );
-
-  y += 15;
-
-  // 👇 ADD FEEDBACK HERE
-  if (feedback[index]) {
-
-    doc.text("Feedback:", 20, y);
     y += 8;
 
     doc.text(
       doc.splitTextToSize(
-        feedback[index].feedback,
+        item.question,
         160
       ),
       20,
       y
     );
 
-    y += 12;
+    y += 15;
 
     doc.text(
-      `Score: ${feedback[index].score}/10`,
+      "Answer:",
       20,
       y
     );
 
-    y += 12;
+    y += 8;
+
+    doc.text(
+      doc.splitTextToSize(
+        item.answer ||
+        "No answer provided",
+        160
+      ),
+      20,
+      y
+    );
+
+    y += 15;
+
+    const status =
+      item.answer === "No answer provided"
+        ? "Not Attempted"
+        : "Attempted";
+
+    doc.text(
+      `Status: ${status}`,
+      20,
+      y
+    );
+
+    y += 10;
+
+    if (
+      feedback[index] &&
+      item.answer !== "No answer provided"
+    ) {
+
+      doc.text(
+        "Feedback:",
+        20,
+        y
+      );
+
+      y += 8;
+
+      doc.text(
+        doc.splitTextToSize(
+          feedback[index].feedback,
+          160
+        ),
+        20,
+        y
+      );
+
+      y += 12;
+
+      doc.text(
+        `Score: ${feedback[index].score}/10`,
+        20,
+        y
+      );
+
+      y += 12;
+    }
+
+    if (y > 260) {
+      doc.addPage();
+      y = 20;
+    }
+
+  });
+  
+
+  doc.setFontSize(18);
+  doc.text(
+    "Recommendations",
+    20,
+    20
+  );
+
+  doc.setFontSize(12);
+
+  if (score >= 40) {
+
+    doc.text(
+      "Strengths:",
+      20,
+      40
+    );
+
+    doc.text(
+      "- Strong technical understanding",
+      25,
+      50
+    );
+
+    doc.text(
+      "- Good interview performance",
+      25,
+      60
+    );
+
+    doc.text(
+      "Recommendation:",
+      20,
+      80
+    );
+
+    doc.text(
+      "- Practice advanced interview questions",
+      25,
+      90
+    );
+
   }
+  else {
 
-  // 👇 KEEP PAGE BREAK CHECK HERE
-  if (y > 260) {
-    doc.addPage();
-    y = 20;
+    doc.text(
+      "Areas to Improve:",
+      20,
+      40
+    );
+
+    doc.text(
+      "- Core technical concepts",
+      25,
+      50
+    );
+
+    doc.text(
+      "- Interview confidence",
+      25,
+      60
+    );
+
+    doc.text(
+      "- Problem solving skills",
+      25,
+      70
+    );
+    doc.text(
+      "Next Steps:",
+      20,
+      90
+    );
+    
+    doc.text(
+      "- Revise Python fundamentals",
+      25,
+      100
+    );
+    
+    doc.text(
+      "- Practice 3 mock interviews",
+      25,
+      110
+    );
+    
+    doc.text(
+      "- Improve technical explanations",
+      25,
+      120
+    );
   }
+    doc.setFontSize(10);
 
-});
-
+doc.text(
+  "Generated by AI Career Coach",
+  20,
+  285
+);
   doc.save("AI_Interview_Report.pdf");
 };
+
   useEffect(() => {
     if (!location.state?.answers) {
       navigate("/mock-interview");
