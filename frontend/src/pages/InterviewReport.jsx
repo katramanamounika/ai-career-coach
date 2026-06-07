@@ -35,15 +35,18 @@ const downloadPDF = () => {
 
   let level = "Beginner";
 
-  if (score >= 70) {
-    level = "Excellent";
-  }
-  else if (score >= 50) {
-    level = "Good";
-  }
-  else if (score >= 30) {
-    level = "Average";
-  }
+  if (percentage >= 80) {
+  level = "Excellent";
+}
+else if (percentage >= 60) {
+  level = "Good";
+}
+else if (percentage >= 40) {
+  level = "Average";
+}
+else {
+  level = "Beginner";
+}
 
 
   // Main Title
@@ -97,87 +100,81 @@ const downloadPDF = () => {
    doc.line(20, 110, 190, 110);
 
   doc.setFontSize(16);
-  doc.text("CANDIDATE SUMMARY", 20, 125);
+  doc.text("CANDIDATE SUMMARY", 20, 120);
   
   doc.setFontSize(12);
   doc.text(
     `Maximum Possible Score: ${answers.length * 10}`,
     20,
-    170
+    160
   );
 
   doc.text(
     `Questions Attempted: ${answeredQuestions}/${answers.length}`,
     20,
-    140
+    130
   );
 
   doc.text(
     `Questions Skipped: ${unansweredQuestions}`,
     20,
-    150
+    140
   );
 
   doc.text(
     `Performance Level: ${level}`,
     20,
-    160
+    150
   );
-  let y = 180;
+ // let y = 180;
+let y = 180;
+
+doc.line(20, 170, 190, 170);
 
   // Questions start here
     answers.forEach((item, index) => {
       
+if (y > 220) {
+  doc.addPage();
+  y = 20;
+}
+   doc.text(
+  `Q${index + 1}. ${item.question}`,
+  20,
+  y
+);
+y += 8;
+/*  const questionLines =
+  doc.splitTextToSize(item.question, 160);
 
-    doc.setFontSize(14);
+doc.text(
+  questionLines,
+  20,
+  y
+);
+
+y += questionLines.length * 7;
+y += 8;
     doc.text(
-      `Question ${index + 1}`,
-      20,
-      y
-    );
+  "Ans:",
+  20,
+  y
+);*/
+   // y += 8;
+    const answerLines =
+  doc.splitTextToSize(
+    `Ans:${item.answer || "No answer provided"}.`,
+    160
+  );
 
-    y += 10;
+doc.text(
+  answerLines,
+  20,
+  y
+);
 
-    doc.setFontSize(12);
-
-    doc.text(
-      "Question:",
-      20,
-      y
-    );
-
-    y += 8;
-
-    doc.text(
-      doc.splitTextToSize(
-        item.question,
-        160
-      ),
-      20,
-      y
-    );
-
-    y += 15;
-
-    doc.text(
-      "Answer:",
-      20,
-      y
-    );
-
-    y += 8;
-
-    doc.text(
-      doc.splitTextToSize(
-        item.answer ||
-        "No answer provided",
-        160
-      ),
-      20,
-      y
-    );
-
-    y += 15;
+y += answerLines.length * 6;
+y += 2;
 
     const status =
       item.answer === "No answer provided"
@@ -190,7 +187,7 @@ const downloadPDF = () => {
       y
     );
 
-    y += 10;
+    y += 8;
 
     if (
       feedback[index] &&
@@ -214,7 +211,7 @@ const downloadPDF = () => {
         y
       );
 
-      y += 12;
+      y += 8;
 
       doc.text(
         `Score: ${feedback[index].score}/10`,
@@ -225,112 +222,105 @@ const downloadPDF = () => {
       y += 12;
     }
 
-    if (y > 260) {
-      doc.addPage();
-      y = 20;
-    }
+    if (y > 240) {
+  doc.addPage();
+  y = 20;
+}
 
-  });
-  
+});
 
-  doc.setFontSize(18);
+// =====================
+// RECOMMENDATIONS PAGE
+// =====================
+
+// Always create a fresh page
+doc.addPage();
+
+let recY = 20;
+
+doc.setFontSize(18);
+doc.text("Recommendations", 20, recY);
+
+recY += 10;
+
+doc.setFontSize(12);
+
+if (score >= 40) {
+
+  doc.text("Strengths", 20, recY);
+  recY += 10;
+
+  doc.text("• Strong technical understanding", 30, recY);
+  recY += 8;
+
+  doc.text("• Good interview performance", 30, recY);
+  recY += 8;
+
+  doc.text("Recommended Action Plan", 20, recY);
+  recY += 10;
+
+  doc.text("• Practice advanced interview questions", 30, recY);
+  recY += 8;
+
+  doc.text("• Continue building projects", 30, recY);
+
+} else {
+
+  doc.text("Areas to Improve", 20, recY);
+  recY += 9;
+
+  doc.text("• Core technical concepts", 30, recY);
+  recY += 8;
+
+  doc.text("• Interview confidence", 30, recY);
+  recY += 8;
+
+  doc.text("• Problem-solving skills", 30, recY);
+  recY += 8;
+
+  doc.text("Recommended Action Plan", 20, recY);
+  recY += 8;
+
   doc.text(
-    "Recommendations",
-    20,
-    20
+    `• Revise ${role} fundamentals`,
+    30,
+    recY
   );
 
-  doc.setFontSize(12);
+  recY += 8;
 
-  if (score >= 40) {
+  doc.text(
+    "• Complete at least 3 mock interviews",
+    30,
+    recY
+  );
 
-    doc.text(
-      "Strengths:",
-      20,
-      40
-    );
+  recY += 8;
 
-    doc.text(
-      "- Strong technical understanding",
-      25,
-      50
-    );
+  doc.text(
+    "• Improve technical explanations",
+    30,
+    recY
+  );
 
-    doc.text(
-      "- Good interview performance",
-      25,
-      60
-    );
+  recY += 8;
 
-    doc.text(
-      "Recommendation:",
-      20,
-      80
-    );
+  doc.text(
+    "• Practice answering questions aloud",
+    30,
+    recY
+  );
+}
 
-    doc.text(
-      "- Practice advanced interview questions",
-      25,
-      90
-    );
-
-  }
-  else {
-
-    doc.text(
-      "Areas to Improve:",
-      20,
-      40
-    );
-
-    doc.text(
-      "- Core technical concepts",
-      25,
-      50
-    );
-
-    doc.text(
-      "- Interview confidence",
-      25,
-      60
-    );
-
-    doc.text(
-      "- Problem solving skills",
-      25,
-      70
-    );
-    doc.text(
-      "Next Steps:",
-      20,
-      90
-    );
-    
-    doc.text(
-      "- Revise Python fundamentals",
-      25,
-      100
-    );
-    
-    doc.text(
-      "- Practice 3 mock interviews",
-      25,
-      110
-    );
-    
-    doc.text(
-      "- Improve technical explanations",
-      25,
-      120
-    );
-  }
-    doc.setFontSize(10);
+// Footer
+doc.setFontSize(10);
 
 doc.text(
   "Generated by AI Career Coach",
   20,
   285
 );
+
   doc.save("AI_Interview_Report.pdf");
 };
 
