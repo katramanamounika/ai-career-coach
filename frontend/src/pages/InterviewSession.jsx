@@ -133,7 +133,9 @@ const user = JSON.parse(localStorage.getItem("user"));
         state: {
           answers: finalAnswers,
           score: res.data.score || 0,
-          feedback: res.data.feedback || []
+          feedback: res.data.feedback || [],
+          role,
+          difficulty
         }
       });
 
@@ -142,10 +144,10 @@ const user = JSON.parse(localStorage.getItem("user"));
       console.log(err);
 
       navigate("/interview-report", {
-        state: {
-          answers: finalAnswers,
-          score: 0,
-          feedback: []
+  state: {
+    answers: finalAnswers,
+    score: res.data.score,
+    feedback: res.data.feedback,
         }
       });
     }
