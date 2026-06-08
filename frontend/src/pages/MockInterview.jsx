@@ -156,17 +156,13 @@ const MockInterview = () => {
                 </option>
 
                 <option>
-                  Software Engineer
-                </option>
-
-                <option>
-                  Devops Engineer
+                  DevOps Engineer
                 </option>
                 <option>
-                  AI-ML Engineer
+                  AI/ML Engineer
                 </option>
                 <option>
-                   Cybersecurity Engineer
+                   Cyber Security Engineer
                 </option>
                 <option>
                   Mobile App Developer
@@ -179,13 +175,13 @@ const MockInterview = () => {
                   QA Engineer
                 </option>
                 <option>
-                  BlockChain Developer
+                  Blockchain Developer
                 </option>
                 <option>
-                  UI UX Designer
+                  UI/UX Designer
                 </option>
                 <option>
-                  Game Designer
+                  Game Developer
                 </option>
                 <option>
                   Embedded Engineer
