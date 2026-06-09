@@ -7,8 +7,8 @@ const router = express.Router();
 // SAVE INTERVIEW
 router.post("/save", async (req, res) => {
 
-  console.log("SAVE API HIT");
-  console.log(req.body);
+  //console.log("SAVE API HIT");
+  //console.log(req.body);
 
   try {
 
@@ -27,8 +27,13 @@ router.post("/save", async (req, res) => {
 
       const question = questions[i];
       const answer = answers[i];
-
-      if (!answer || answer.trim() === "") {
+console.log("QUESTION:", question);
+console.log("ANSWER:", answer);
+if (
+  !answer ||
+  answer.trim() === "" ||
+  answer === "No answer provided"
+) {
 
         feedbackList.push({
           question,
@@ -44,6 +49,7 @@ router.post("/save", async (req, res) => {
         question,
         answer
       );
+      console.log(aiResponse);
 
       let score = 0;
 
@@ -87,8 +93,8 @@ router.post("/save", async (req, res) => {
     });
 
     await interview.save();
-console.log("INTERVIEW SAVED");
-console.log(interview);
+//console.log("INTERVIEW SAVED");
+//console.log(interview);
     res.status(201).json({
       success: true,
       message: "Interview saved successfully",
@@ -99,16 +105,16 @@ console.log(interview);
 
   } catch (error) {
 
-    console.log("SAVE ERROR:");
-    console.log(error);
+  console.log("========== SAVE ERROR ==========");
+  console.log(error);
+  console.log("================================");
 
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+  res.status(500).json({
+    success: false,
+    error: error.message
+  });
 
-  }
-
+}
 });
 
 // GET ALL INTERVIEWS

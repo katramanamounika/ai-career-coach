@@ -110,9 +110,17 @@ const InterviewSession = () => {
   // 🧠 FINAL SUBMIT WITH AI SCORING
   const finishInterview = async (finalAnswersParam) => {
 
-    const finalAnswers =
-      finalAnswersParam || allAnswers;
+    let finalAnswers = finalAnswersParam;
 
+if (!finalAnswers) {
+  finalAnswers = [
+    ...allAnswers,
+    {
+      question: currentQuestion,
+      answer: answer.trim() || "No answer provided"
+    }
+  ];
+}
     if (isEnded) return;
     setIsEnded(true);
 
@@ -141,16 +149,19 @@ const user = JSON.parse(localStorage.getItem("user"));
 
     } catch (err) {
 
-      console.log(err);
+  console.log(err);
 
-      navigate("/interview-report", {
-  state: {
-    answers: finalAnswers,
-    score: res.data.score,
-    feedback: res.data.feedback,
-        }
-      });
+  navigate("/interview-report", {
+    state: {
+      answers: finalAnswers,
+      score: 0,
+      feedback: [],
+      role,
+      difficulty
     }
+  });
+
+}
   };
 
   if (!questions) {

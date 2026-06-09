@@ -1,7 +1,7 @@
 const fs = require("fs");
 const pdfParse = require("pdf-parse");
 const extractSkills=require("../services/skillExtractor");
-
+const detectRole = require("../services/roleDetector");
 const uploadResume = async (req, res) => {
 
     try {
@@ -12,14 +12,15 @@ const uploadResume = async (req, res) => {
 
         const pdfData = await pdfParse(dataBuffer);
         const extractedSkills=extractSkills(pdfData.text);
-
+        const detectedRole =detectRole(extractedSkills);
         res.status(200).json({
 
-            success: true,
-            extractedSkills,
-            extractedText:pdfData.text
+    success: true,
+    extractedSkills,
+    detectedRole,
+    extractedText: pdfData.text
 
-        });
+});
 
     } catch (error) {
 
