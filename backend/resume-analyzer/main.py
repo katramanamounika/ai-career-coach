@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-
+from questions import QUESTION_DB, generate_questions
 import pdfplumber
 
 from ats import calculate_ats_score
@@ -65,7 +65,11 @@ async def mock_interview(role: str, difficulty: str):
 
     try:
 
-        questions = QUESTION_DB[role][difficulty]
+        questions = generate_questions(
+            role,
+            difficulty,
+            5
+        )
 
         return {
             "success": True,

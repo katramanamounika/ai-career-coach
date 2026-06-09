@@ -163,7 +163,7 @@ y += 8;
    // y += 8;
     const answerLines =
   doc.splitTextToSize(
-    `Ans:${item.answer || "No answer provided"}.`,
+    `Ans: ${item.answer || "No answer provided"}.`,
     160
   );
 

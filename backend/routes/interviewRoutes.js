@@ -45,10 +45,12 @@ if (
         continue;
       }
 
-      const aiResponse = await generateScore(
-        question,
-        answer
-      );
+      const aiResponse =
+await generateScore(
+  question,
+  answer,
+  difficulty
+);
       console.log(aiResponse);
 
       let score = 0;
