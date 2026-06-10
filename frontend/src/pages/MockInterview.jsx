@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useState, useEffect } from "react";
+import {
+  useNavigate,
+  useLocation
+} from "react-router-dom";
 import {
   Mic,
   Brain,
@@ -14,7 +16,20 @@ const MockInterview = () => {
   const [difficulty, setDifficulty] = useState("");
 
   const navigate = useNavigate();
+const location = useLocation();
+useEffect(() => {
 
+  if (
+    location.state?.detectedRole
+  ) {
+
+    setRole(
+      location.state.detectedRole
+    );
+
+  }
+
+}, [location]);
   const startInterview = async () => {
 
     if (!role || !difficulty) {
@@ -197,24 +212,41 @@ const MockInterview = () => {
                 Difficulty Level
               </label>
 
-              <select
-                value={difficulty}
-                onChange={(e) =>
-                  setDifficulty(e.target.value)
-                }
-                className="w-full bg-slate-800 border border-slate-700 rounded-2xl p-4 outline-none"
-              >
+             <select
+  value={difficulty}
+  onChange={(e) => setDifficulty(e.target.value)}
+  className="w-full bg-slate-800 border border-slate-700 rounded-2xl p-4 outline-none"
+>
+  <option value="">
+    Select Difficulty
+  </option>
 
-                <option value="">
-                  Select Difficulty
-                </option>
+  <option value="Easy">
+    Easy
+  </option>
 
-                <option>Easy</option>
-                <option>Medium</option>
-                <option>Hard</option>
+  <option value="Medium">
+    Medium
+  </option>
 
-              </select>
+  <option value="Hard">
+    Hard
+  </option>
 
+</select>
+  {
+  location.state?.detectedRole && (
+    <div className="mt-4 bg-slate-800 border border-cyan-500 rounded-xl p-4">
+      <p className="text-gray-400 text-sm">
+        Resume Detected Role
+      </p>
+
+      <p className="text-cyan-400 font-bold text-lg">
+        {role}
+      </p>
+    </div>
+  )
+}
             </div>
 
             {/* Button */}

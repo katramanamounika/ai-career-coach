@@ -1,6 +1,16 @@
-const expectedAnswers = require("../data/expectedAnswers");
+const expectedAnswersEasy =
+require("../data/expectedAnswersEasy");
 
-const generateScore = async (question, answer) => {
+const expectedAnswersMedium =
+require("../data/expectedAnswersMedium");
+
+const expectedAnswersHard =
+require("../data/expectedAnswersHard");
+const generateScore = async (
+  question,
+  answer,
+  difficulty
+)  => {
     try {
 
       const cleanedAnswer = (answer || "")
@@ -45,7 +55,17 @@ const generateScore = async (question, answer) => {
       const normalizedQuestion = question
         ?.trim()
         .toLowerCase();
+let expectedAnswers = {};
 
+if (difficulty === "Easy") {
+  expectedAnswers = expectedAnswersEasy;
+}
+else if (difficulty === "Medium") {
+  expectedAnswers = expectedAnswersMedium;
+}
+else {
+  expectedAnswers = expectedAnswersHard;
+}
       let answerData = null;
 
       for (const key in expectedAnswers) {
@@ -56,20 +76,20 @@ const generateScore = async (question, answer) => {
           break;
         }
       }
-
+//console.log("QUESTION RECEIVED:", question);
+//console.log("NORMALIZED:", normalizedQuestion);
+//console.log("FOUND:", answerData);
       if (
-        !answerData ||
-        !answerData.keywords ||
-        answerData.keywords.length === 0
-      ) {
-        return `
-  Score: 0
-  Feedback: Evaluation data not available
-  `;
-      }
-
-      const keywords = answerData.keywords;
-
+  !answerData ||
+  answerData.length === 0
+) {
+  return `
+Score: 0
+Feedback: Evaluation data not available
+`;
+} 
+     const keywords = answerData.keywords;
+//const keywords = answerData;
       let matchedKeywords = 0;
 
       keywords.forEach((keyword) => {

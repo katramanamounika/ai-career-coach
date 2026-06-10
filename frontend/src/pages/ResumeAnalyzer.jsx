@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Upload,
   FileText,
@@ -8,46 +9,112 @@ const ResumeAnalyzer = () => {
   const [resume, setResume] = useState(null);
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [result, setResult] = useState(null);
   const [resumePreview, setResumePreview] = useState("");
-
   const handleAnalyze = async () => {
-    if (!resume || !role) {
-      alert("Please upload resume and select role");
-      return;
+
+  if (!resume) {
+
+    alert("Please upload resume");
+
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    // STEP 1 - Detect Role
+
+    const roleFormData = new FormData();
+
+    roleFormData.append(
+      "resume",
+      resume
+    );
+
+    const roleResponse = await fetch(
+      "http://localhost:5000/api/resume/upload",
+      {
+        method: "POST",
+        body: roleFormData,
+      }
+    );
+
+    const roleData =
+      await roleResponse.json();
+
+    const detectedRole =
+      roleData.detectedRole;
+
+    setRole(detectedRole);
+console.log("Detected Role:", detectedRole);
+    // STEP 2 - ATS Analysis
+
+    const formData = new FormData();
+
+    formData.append(
+      "file",
+      resume
+    );
+
+    formData.append(
+      "role",
+      detectedRole
+    );
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/analyze",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data =
+      await response.json();
+
+    setResult({
+      score: data.score,
+      skills: data.matched_skills,
+      missingSkills: data.missing_skills,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Something went wrong");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+};
+const startResumeInterview = () => {
+
+  if (!role) {
+
+    alert(
+      "Analyze resume first"
+    );
+
+    return;
+  }
+
+  navigate(
+    "/mock-interview",
+    {
+      state: {
+        detectedRole: role
+      }
     }
+  );
 
-    try {
-      setLoading(true);
-
-      const formData = new FormData();
-      formData.append("file", resume);
-      formData.append("role", role);
-
-      const response = await fetch(
-        "http://127.0.0.1:8000/analyze",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await response.json();
-
-      setResult({
-        score: data.score,
-        skills: data.matched_skills,
-        missingSkills: data.missing_skills,
-      });
-
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white p-8 md:p-12">
 
@@ -84,25 +151,17 @@ const ResumeAnalyzer = () => {
               </div>
             </div>
 
-            {/* ROLE DROPDOWN */}
-            <label className="text-sm">Select Role</label>
+    <div className="bg-slate-800 p-4 rounded-xl mb-4">
 
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full p-3 mt-2 mb-4 rounded-lg text-black"
-            >
-              <option value="">Select Role</option>
-              <option>Frontend Developer</option>
-              <option>Backend Developer</option>
-              <option>Full Stack Developer</option>
-              <option>Python Developer</option>
-              <option>Java Developer</option>
-              <option>Data Analyst</option>
-              <option>AI/ML Engineer</option>
-              <option>Software Engineer</option>
-              <option>DevOps Engineer</option>
-            </select>
+  <p className="text-sm text-gray-400">
+    Detected Role
+  </p>
+
+  <p className="text-cyan-400 font-bold text-lg">
+    {role || "Upload resume and analyze"}
+  </p>
+
+</div>
 
             {/* FILE UPLOAD */}
             <label className="border-2 border-dashed border-slate-700 hover:border-cyan-400 transition rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer text-center">
@@ -186,6 +245,12 @@ const ResumeAnalyzer = () => {
                       </span>
                     ))}
                   </div>
+                  <button
+  onClick={startResumeInterview}
+  className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 rounded-2xl"
+>
+  Start Resume Based Interview
+</button>
                 </div>
 
                 {/* MISSING */}

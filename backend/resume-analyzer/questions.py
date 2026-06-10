@@ -719,34 +719,22 @@ QUESTION_DB = {
     }
 
 }
-
-"""def generate_questions(role, difficulty, num_questions=5):
-
-    role = role.lower()
-    difficulty = difficulty.lower()
+def generate_questions(role, difficulty, num_questions=5):
 
     selected_questions = []
 
-    # Check if role exists
     if role in QUESTION_DB:
 
-        # Check difficulty exists
         if difficulty in QUESTION_DB[role]:
 
             questions_pool = QUESTION_DB[role][difficulty]
 
-            # Randomly pick questions
             selected_questions = random.sample(
                 questions_pool,
                 min(num_questions, len(questions_pool))
             )
 
-    # Shuffle final questions
-    random.shuffle(selected_questions)
-
     return selected_questions
-
-
 def conduct_interview(role, difficulty):
 
     print(f"\nStarting {difficulty.upper()} interview for {role.upper()}\n")
@@ -771,8 +759,9 @@ def conduct_interview(role, difficulty):
 
 
 # Example Usage
+if __name__ == "__main__":
 
-role = input("Enter Role: ")
-difficulty = input("Enter Difficulty (easy/medium/hard): ")
+    role = input("Enter Role: ")
+    difficulty = input("Enter Difficulty (easy/medium/hard): ")
 
-conduct_interview(role, difficulty)"""
+    conduct_interview(role, difficulty)
