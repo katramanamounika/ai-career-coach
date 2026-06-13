@@ -1,13 +1,14 @@
 const express = require("express");
+const protect =require("../middleware/authMiddleware");
 const router = express.Router();
-
 const Interview = require("../models/Interview");
 
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
 
   try {
-const interviews = await Interview.find({
-  userId: req.user.id
+const interviews =
+await Interview.find({
+  userId: req.user._id
 });
 
     const totalInterviews =

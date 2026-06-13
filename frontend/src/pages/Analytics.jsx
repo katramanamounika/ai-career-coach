@@ -23,9 +23,19 @@ const Analytics = () => {
   const fetchAnalytics = async () => {
     try {
 
-      const response = await axios.get(
-        "http://localhost:5000/api/analytics"
-      );
+      const token =
+localStorage.getItem("token");
+
+const response =
+await axios.get(
+  "http://localhost:5000/api/analytics",
+  {
+    headers: {
+      Authorization:
+        `Bearer ${token}`
+    }
+  }
+);
 
       setAnalytics(response.data);
 

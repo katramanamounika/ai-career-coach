@@ -215,7 +215,7 @@ QUESTION_DB = {
             "Explain enterprise Java architecture."
         ]
     },
-    "AI/ML Engineer": {
+    "AI-ML Engineer": {
 
         "Easy": [
             "What is Machine Learning?",
@@ -550,7 +550,7 @@ QUESTION_DB = {
         ]
     },
 
-    "UI/UX Designer": {
+    "UI-UX Designer": {
 
         "Easy": [
             "What is UI design?",
