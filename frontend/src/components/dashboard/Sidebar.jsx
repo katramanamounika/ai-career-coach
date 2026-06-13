@@ -98,19 +98,7 @@ const Sidebar = () => {
 
       </div>
 
-      {/* Logout */}
-      <div className="mt-20">
-
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-slate-800 transition duration-300 w-full">
-
-          <LogOut size={20} />
-
-          <span>Logout</span>
-
-        </button>
-
-      </div>
-
+      
     </div>
   );
 };
