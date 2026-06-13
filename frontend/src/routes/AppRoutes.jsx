@@ -1,24 +1,48 @@
 import { Routes, Route } from "react-router-dom";
 
+import ProtectedRoute from "./ProtectedRoute";
+
 import LandingPage from "../pages/LandingPage";
+
 import LoginPage from "../pages/LoginPage";
+
 import RegisterPage from "../pages/Register";
+
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
+
 import Dashboard from "../pages/Dashboard";
+
 import ResumeAnalyzer from "../pages/ResumeAnalyzer";
+
 import MockInterview from "../pages/MockInterview";
+
 import Analytics from "../pages/Analytics";
+
 import InterviewSession from "../pages/InterviewSession";
 
+import InterviewReport from "../pages/InterviewReport";
+
+import InterviewHistory from "../pages/InterviewHistory";
 export default function AppRoutes() {
+
   return (
+
     <Routes>
 
-      <Route path="/" element={<LandingPage />} />
+      <Route
+        path="/"
+        element={<LandingPage />}
+      />
 
-      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/login"
+        element={<LoginPage />}
+      />
 
-      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/register"
+        element={<RegisterPage />}
+      />
 
       <Route
         path="/forgot-password"
@@ -27,7 +51,11 @@ export default function AppRoutes() {
 
       <Route
         path="/dashboard"
-        element={<Dashboard />}
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
       />
 
       <Route
@@ -50,6 +78,20 @@ export default function AppRoutes() {
         element={<InterviewSession />}
       />
 
+      <Route
+        path="/interview-report"
+        element={<InterviewReport />}
+      />
+      <Route
+      path="/interview-history"
+      element={<InterviewHistory/>}
+      />
+      <Route
+        path="*"
+        element={<div className="text-white p-10">Page Not Found</div>}
+      />
+
     </Routes>
+
   );
 }

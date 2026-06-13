@@ -1,281 +1,86 @@
-import os
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from questions import QUESTION_DB, generate_questions
+import pdfplumber
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-
-from resume_parser import extract_resume_text
-from skills import extract_skills
-from role_detection import detect_role
 from ats import calculate_ats_score
-from skill_gap import find_missing_skills
-from suggestions import generate_suggestions
-from adaptive_interview import start_interview
-from confidence_detection import calculate_confidence
-
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename
-
-import cv2
-from deepface import DeepFace
-import threading
-import time
+from questions import QUESTION_DB
 
 
-# ==============================
-# VIDEO INTERVIEW ANALYSIS
-# ==============================
-
-emotion_data = []
-
-camera_running = True
+app = FastAPI()
 
 
-def start_video_analysis():
-
-    global emotion_data
-    global camera_running
-
-    camera = cv2.VideoCapture(0)
-
-    while camera_running:
-
-        success, frame = camera.read()
-
-        if not success:
-            continue
-
-        try:
-
-            result = DeepFace.analyze(
-
-                frame,
-
-                actions=['emotion'],
-
-                enforce_detection=False
-            )
-
-            emotion = result[0]['dominant_emotion']
-
-            emotion_data.append(emotion)
-
-            cv2.putText(
-
-                frame,
-
-                f"Emotion: {emotion}",
-
-                (20, 40),
-
-                cv2.FONT_HERSHEY_SIMPLEX,
-
-                1,
-
-                (0, 255, 0),
-
-                2
-            )
-
-        except Exception as e:
-
-            print("Emotion Detection Error:", e)
-
-        cv2.imshow("AI Video Interview", frame)
-
-        if cv2.waitKey(1) == 27:
-            break
-
-    camera.release()
-
-    cv2.destroyAllWindows()
-
-# ==============================
-# START APPLICATION
-# ==============================
-
-print("\n========== AI RESUME ANALYZER ==========\n")
-
-
-# ==============================
-# RESUME UPLOAD
-# ==============================
-
-Tk().withdraw()
-
-resume_path = askopenfilename(
-
-    title="Select Resume PDF",
-
-    filetypes=[("PDF Files", "*.pdf")]
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-print("\nSelected Resume:\n")
 
-print(resume_path)
+# =========================
+# ATS RESUME ANALYZER API
+# =========================
 
+@app.post("/analyze")
 
-# ==============================
-# RESUME PARSING
-# ==============================
+async def analyze_resume(
+    file: UploadFile = File(...),
+    role: str = Form(...)
+):
 
-resume_text = extract_resume_text(resume_path)
+    text = ""
 
-print("\nResume Text Extracted Successfully!\n")
+    try:
 
+        with pdfplumber.open(file.file) as pdf:
 
-# ==============================
-# SKILL EXTRACTION
-# ==============================
+            for page in pdf.pages:
 
-skills = extract_skills(resume_text)
+                extracted = page.extract_text()
 
-print("\nExtracted Skills:\n")
+                if extracted:
+                    text += extracted
 
-print(skills)
+    except Exception as e:
 
+        return {
+            "error": str(e)
+        }
 
-# ==============================
-# ROLE DETECTION
-# ==============================
+    result = calculate_ats_score(text, role)
 
-role = detect_role(skills)
+    return result
 
-print("\nDetected Role:\n")
 
-print(role)
+# =========================
+# MOCK INTERVIEW API
+# =========================
 
+@app.get("/mock-interview/{role}/{difficulty}")
 
-# ==============================
-# ATS SCORE
-# ==============================
+async def mock_interview(role: str, difficulty: str):
 
-ats_score = calculate_ats_score(role, skills)
+    try:
 
-print("\nATS Score:\n")
+        questions = generate_questions(
+            role,
+            difficulty,
+            5
+        )
 
-print(str(ats_score) + "%")
+        return {
+            "success": True,
+            "role": role,
+            "difficulty": difficulty,
+            "questions": questions
+        }
 
+    except Exception as e:
 
-# ==============================
-# MISSING SKILLS
-# ==============================
-
-missing_skills = find_missing_skills(role, skills)
-
-print("\nMissing Skills:\n")
-
-print(missing_skills)
-
-
-# ==============================
-# SUGGESTIONS
-# ==============================
-
-suggestions = generate_suggestions(
-
-    role,
-    missing_skills
-)
-
-print("\nSuggestions:\n")
-
-for suggestion in suggestions:
-
-    print("Skill:", suggestion["skill"])
-
-    print("Suggestion:", suggestion["suggestion"])
-
-    print()
-
-
-# ==============================
-# START VIDEO ANALYSIS
-# ==============================
-
-print("\nStarting Video Interview Analysis...\n")
-
-video_thread = threading.Thread(
-
-    target=start_video_analysis
-)
-
-video_thread.start()
-
-time.sleep(3)
-
-
-# ==============================
-# START AI INTERVIEW
-# ==============================
-
-print("\n========== STARTING AI INTERVIEW ==========\n")
-print("\n========Please answer every question=======\n")
-print("\n========You will get 30 seconds to answer every question=========\n")
-
-results = start_interview(skills)
-
-
-# ==============================
-# STOP CAMERA
-# ==============================
-
-camera_running = False
-
-video_thread.join()
-
-
-# ==============================
-# CONFIDENCE SCORE
-# ==============================
-
-confidence_score = calculate_confidence(
-
-    emotion_data
-)
-
-print("\nConfidence Score:\n")
-
-print(str(confidence_score) + "%")
-
-
-# ==============================
-# FINAL REPORT
-# ==============================
-
-print("\n========== FINAL INTERVIEW REPORT ==========\n")
-
-for result in results:
-
-    print("Question:\n")
-
-    print(result["question"])
-
-    print()
-
-    print("Candidate Answer:\n")
-
-    print(result["answer"])
-
-    print()
-
-    print("AI Feedback:\n")
-
-    print(result["feedback"])
-
-    print("\n----------------------------------\n")
-
-
-# ==============================
-# FINAL SUMMARY
-# ==============================
-
-print("\n========== FINAL SUMMARY ==========\n")
-
-print("Detected Role:", role)
-
-print("ATS Score:", str(ats_score) + "%")
-
-print("Confidence Score:", str(confidence_score) + "%")
-
-print("\nInterview Completed Successfully!\n")
+        return {
+            "success": False,
+            "message": str(e)
+        }

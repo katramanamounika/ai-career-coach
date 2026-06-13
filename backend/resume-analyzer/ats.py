@@ -1,17 +1,31 @@
-from roles_data import ROLES_DATA
+from roles_data import ROLES
 
-def calculate_ats_score(role, skills):
+def calculate_ats_score(resume_text, role):
+    print("ROLE:", role)
+    print("TEXT LENGTH:", len(resume_text))
 
-    required_skills = ROLES_DATA[role]["skills"]
+    role_skills = ROLES.get(role, [])
 
-    matched = 0
+    resume_text = resume_text.lower()
 
-    for skill in skills:
+    matched_skills = []
 
-        if skill in required_skills:
+    missing_skills = []
 
-            matched += 1
+    for skill in role_skills:
 
-    score = (matched / len(required_skills)) * 100
+        if skill.lower() in resume_text:
+            matched_skills.append(skill)
+        else:
+            missing_skills.append(skill)
 
-    return round(score, 2)
+    if len(role_skills) == 0:
+        score = 0
+    else:
+        score = int((len(matched_skills) / len(role_skills)) * 100)
+
+    return {
+        "score": score,
+        "matched_skills": matched_skills,
+        "missing_skills": missing_skills
+    }
