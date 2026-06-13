@@ -5,8 +5,14 @@ import {
   Mic,
   BarChart3,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
   const hasData = false;
   return (
     <div className="flex bg-gradient-to-br from-slate-950 via-slate-900 to-black-950 text-white min-h-screen">
@@ -29,13 +35,23 @@ const Dashboard = () => {
   </p>
 
 </div>
+<div className="flex justify-end mb-6">
+
+  <button
+    onClick={handleLogout}
+    className="bg-red-500 hover:bg-red-400 text-white px-5 py-2 rounded-xl"
+  >
+    Logout
+  </button>
+
+</div>
 
         {/* Dashboard Cards */}
 {hasData ? (
 
   /* EXISTING USER DASHBOARD */
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 
     <DashboardCard
       title="Resume Score"
@@ -60,7 +76,13 @@ const Dashboard = () => {
       buttonText="View Analytics"
       link="/analytics"
     />
-
+    <DashboardCard
+  title="Interview History"
+  value="📋"
+  description="View previous interviews"
+  buttonText="Open History"
+  link="/interview-history"
+/>
   </div>
 
 ) : (

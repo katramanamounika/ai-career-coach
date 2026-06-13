@@ -2,8 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthButton from "../common/AuthButton";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 
+=======
+import API from "../../api/authApi";
+>>>>>>> develop
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -23,7 +27,7 @@ const RegisterForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
   let newErrors = {};
@@ -50,7 +54,7 @@ const RegisterForm = () => {
   if (!email) {
     newErrors.email = "Email is required";
   } else if (
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
+    !/\S+@\S+\.\S+/i.test(email)
   ) {
     newErrors.email =
       "Invalid email address";
@@ -103,16 +107,42 @@ const RegisterForm = () => {
 
   setLoading(true);
 
-setTimeout(() => {
-
-  console.log(formData);
+try {
+  console.log(API.defaults.baseURL);
+  const response = await API.post(
+    "/signup",
+    {
+      name,
+      email,
+      password,
+    }
+  );
 
   setLoading(false);
 
+<<<<<<< HEAD
   toast.success("Registration Successful");
   navigate("/dashboard");
+=======
+  console.log(response.data);
+>>>>>>> develop
 
-}, 2000);
+  toast.success(
+    "Registration Successful"
+  );
+
+} catch (error) {
+
+  setLoading(false);
+
+  toast.error(
+    error.response?.data?.message ||
+    "Registration Failed"
+  );
+
+  console.log(error);
+
+}
 };
 
   return (

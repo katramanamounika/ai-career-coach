@@ -1,0 +1,424 @@
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import jsPDF from "jspdf";
+const InterviewReport = () => {
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const answers = location.state?.answers || [];
+  const score = location.state?.score;
+  const feedback = location.state?.feedback || [];
+  const role = location.state?.role || "Not Available";
+const difficulty = location.state?.difficulty || "Not Available";
+const downloadPDF = () => {
+
+  const doc = new jsPDF();
+
+  const today = new Date().toLocaleDateString();
+
+  const user =
+    JSON.parse(localStorage.getItem("user"));
+
+  const answeredQuestions =
+    answers.filter(
+      a => a.answer !== "No answer provided"
+    ).length;
+
+  const unansweredQuestions =
+    answers.length - answeredQuestions;
+
+  const percentage =
+    answers.length > 0
+      ? (score / (answers.length * 10)) * 100
+      : 0;
+
+  let level = "Beginner";
+
+  if (percentage >= 80) {
+  level = "Excellent";
+}
+else if (percentage >= 60) {
+  level = "Good";
+}
+else if (percentage >= 40) {
+  level = "Average";
+}
+else {
+  level = "Beginner";
+}
+
+
+  // Main Title
+    doc.setFontSize(22);
+  doc.text("AI CAREER COACH", 20, 20);
+
+  doc.setFontSize(18);
+  doc.text("Interview Performance Report", 20, 32);
+
+  doc.line(20, 38, 190, 38);
+
+  doc.setFontSize(12);
+
+  doc.text(
+    `Candidate: ${user?.name || "User"}`,
+    20,
+    50
+  );
+
+  doc.text(
+    `Date: ${today}`,
+    20,
+    60
+  );
+
+  doc.text(
+    `Role: ${role}`,
+    20,
+    70
+  );
+
+  doc.text(
+    `Difficulty: ${difficulty}`,
+    20,
+    80
+  );
+
+  doc.text(
+  `Total Interview Score: ${score}`,
+  20,
+  90
+);
+
+  doc.text(
+    `Percentage: ${percentage.toFixed(1)}%`,
+    20,
+    100
+  );
+
+
+   doc.line(20, 110, 190, 110);
+
+  doc.setFontSize(16);
+  doc.text("CANDIDATE SUMMARY", 20, 120);
+  
+  doc.setFontSize(12);
+  doc.text(
+    `Maximum Possible Score: ${answers.length * 10}`,
+    20,
+    160
+  );
+
+  doc.text(
+    `Questions Attempted: ${answeredQuestions}/${answers.length}`,
+    20,
+    130
+  );
+
+  doc.text(
+    `Questions Skipped: ${unansweredQuestions}`,
+    20,
+    140
+  );
+
+  doc.text(
+    `Performance Level: ${level}`,
+    20,
+    150
+  );
+ // let y = 180;
+let y = 180;
+
+doc.line(20, 170, 190, 170);
+
+  // Questions start here
+    answers.forEach((item, index) => {
+      
+if (y > 220) {
+  doc.addPage();
+  y = 20;
+}
+   doc.text(
+  `Q${index + 1}. ${item.question}`,
+  20,
+  y
+);
+y += 8;
+/*  const questionLines =
+  doc.splitTextToSize(item.question, 160);
+
+doc.text(
+  questionLines,
+  20,
+  y
+);
+
+y += questionLines.length * 7;
+y += 8;
+    doc.text(
+  "Ans:",
+  20,
+  y
+);*/
+   // y += 8;
+    const answerLines =
+  doc.splitTextToSize(
+    `Ans: ${item.answer || "No answer provided"}.`,
+    160
+  );
+
+doc.text(
+  answerLines,
+  20,
+  y
+);
+
+y += answerLines.length * 6;
+y += 2;
+
+    const status =
+      item.answer === "No answer provided"
+        ? "Not Attempted"
+        : "Attempted";
+
+    doc.text(
+      `Status: ${status}`,
+      20,
+      y
+    );
+
+    y += 8;
+
+    if (
+      feedback[index] &&
+      item.answer !== "No answer provided"
+    ) {
+
+      doc.text(
+        "Feedback:",
+        20,
+        y
+      );
+
+      y += 8;
+
+      doc.text(
+        doc.splitTextToSize(
+          feedback[index].feedback,
+          160
+        ),
+        20,
+        y
+      );
+
+      y += 8;
+
+      doc.text(
+        `Score: ${feedback[index].score}/10`,
+        20,
+        y
+      );
+
+      y += 12;
+    }
+
+    if (y > 240) {
+  doc.addPage();
+  y = 20;
+}
+
+});
+
+// =====================
+// RECOMMENDATIONS PAGE
+// =====================
+
+// Always create a fresh page
+doc.addPage();
+
+let recY = 20;
+
+doc.setFontSize(18);
+doc.text("Recommendations", 20, recY);
+
+recY += 10;
+
+doc.setFontSize(12);
+
+if (score >= 40) {
+
+  doc.text("Strengths", 20, recY);
+  recY += 10;
+
+  doc.text("• Strong technical understanding", 30, recY);
+  recY += 8;
+
+  doc.text("• Good interview performance", 30, recY);
+  recY += 8;
+
+  doc.text("Recommended Action Plan", 20, recY);
+  recY += 10;
+
+  doc.text("• Practice advanced interview questions", 30, recY);
+  recY += 8;
+
+  doc.text("• Continue building projects", 30, recY);
+
+} else {
+
+  doc.text("Areas to Improve", 20, recY);
+  recY += 9;
+
+  doc.text("• Core technical concepts", 30, recY);
+  recY += 8;
+
+  doc.text("• Interview confidence", 30, recY);
+  recY += 8;
+
+  doc.text("• Problem-solving skills", 30, recY);
+  recY += 8;
+
+  doc.text("Recommended Action Plan", 20, recY);
+  recY += 8;
+
+  doc.text(
+    `• Revise ${role} fundamentals`,
+    30,
+    recY
+  );
+
+  recY += 8;
+
+  doc.text(
+    "• Complete at least 3 mock interviews",
+    30,
+    recY
+  );
+
+  recY += 8;
+
+  doc.text(
+    "• Improve technical explanations",
+    30,
+    recY
+  );
+
+  recY += 8;
+
+  doc.text(
+    "• Practice answering questions aloud",
+    30,
+    recY
+  );
+}
+
+// Footer
+doc.setFontSize(10);
+
+doc.text(
+  "Generated by AI Career Coach",
+  20,
+  285
+);
+
+  doc.save("AI_Interview_Report.pdf");
+};
+
+  useEffect(() => {
+    if (!location.state?.answers) {
+      navigate("/mock-interview");
+    }
+  }, []);
+
+  return (
+
+    <div className="min-h-screen bg-black text-white p-8">
+
+      {/* HEADER */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-cyan-400">
+          AI Interview Report
+          <p className="text-gray-300 mt-2">
+  Role: {role}
+</p>
+
+<p className="text-gray-300">
+  Difficulty: {difficulty}
+</p>
+
+<p className="text-gray-300">
+  Date: {new Date().toLocaleDateString()}
+</p>
+        </h1>
+        <p className="text-gray-400 mt-2">
+          Performance analysis powered by AI
+        </p>
+      </div>
+
+      {/* SCORE */}
+      <div className="bg-slate-900 p-6 rounded-2xl mb-8">
+        <h2 className="text-xl font-bold">Overall Score</h2>
+        <p className="text-4xl text-green-400 mt-2">
+          {score ?? 0}
+        </p>
+      </div>
+
+      {/* QUESTIONS */}
+      <div className="space-y-6">
+
+        {answers.map((item, index) => (
+
+          <div key={index} className="bg-slate-900 p-6 rounded-2xl">
+
+            <h2 className="text-cyan-400 font-bold mb-2">
+              Question {index + 1}
+            </h2>
+
+            <p className="text-white mb-4">
+              {item.question}
+            </p>
+
+            <div className="bg-slate-800 p-4 rounded-xl">
+              <p className="text-gray-300">
+                {item.answer || "No answer provided"}
+              </p>
+            </div>
+
+            {feedback[index] && (
+              <div className="mt-4 bg-yellow-900/20 p-4 rounded-xl">
+
+                <p className="text-yellow-300">
+                  🤖 {feedback[index].feedback}
+                </p>
+
+                <p className="text-green-400 mt-1">
+                  Score: {feedback[index].score}/10
+                </p>
+
+              </div>
+            )}
+
+          </div>
+
+        ))}
+
+      </div>
+<button
+  onClick={downloadPDF}
+  className="mt-10 mr-4 bg-green-500 text-black px-6 py-2 rounded-xl"
+>
+  Download PDF
+</button>
+
+      <button
+        onClick={() => navigate("/mock-interview")}
+        className="mt-10 bg-cyan-500 text-black px-6 py-2 rounded-xl"
+      >
+        Back
+      </button>
+
+    </div>
+  );
+};
+
+export default InterviewReport;
