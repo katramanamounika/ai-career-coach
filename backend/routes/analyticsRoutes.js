@@ -29,8 +29,6 @@ await Interview.find({
 
     res.json({
 
-      atsScore: 82,
-
       totalInterviews,
 
       confidenceLevel
