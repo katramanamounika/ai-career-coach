@@ -1,6 +1,6 @@
 import Sidebar from "../components/dashboard/Sidebar";
 import {
-  BarChart3,
+ // BarChart3,
   TrendingUp,
   Target,
 } from "lucide-react";
@@ -11,7 +11,7 @@ import axios from "axios";
 const Analytics = () => {
 
   const [analytics, setAnalytics] = useState({
-    atsScore: 0,
+  // atsScore: 0,
     totalInterviews: 0,
     confidenceLevel: 0,
   });
@@ -71,22 +71,6 @@ await axios.get(
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-          {/* ATS Score */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
-
-            <div className="bg-cyan-500/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-              <BarChart3 className="text-cyan-400" />
-            </div>
-
-            <h2 className="text-4xl font-bold mb-2">
-              {analytics.atsScore}%
-            </h2>
-
-            <p className="text-gray-400">
-              Resume ATS Score
-            </p>
-
-          </div>
 
           {/* Interviews */}
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
@@ -132,27 +116,6 @@ await axios.get(
           </h2>
 
           <div className="space-y-8">
-
-            {/* Resume */}
-            <div>
-
-              <div className="flex flex-col lg:flex-row justify-between mb-3">
-                <span>Resume Optimization</span>
-                <span>{analytics.atsScore}%</span>
-              </div>
-
-              <div className="w-full bg-slate-800 rounded-full h-3">
-
-                <div
-                  className="bg-cyan-400 h-3 rounded-full"
-                  style={{
-                    width: `${analytics.atsScore}%`
-                  }}
-                ></div>
-
-              </div>
-
-            </div>
 
             {/* Interview */}
             <div>
