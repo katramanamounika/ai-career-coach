@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthButton from "../common/AuthButton";
-<<<<<<< HEAD
+
 import { useNavigate } from "react-router-dom";
 
-=======
 import API from "../../api/authApi";
->>>>>>> develop
+
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -120,12 +119,11 @@ try {
 
   setLoading(false);
 
-<<<<<<< HEAD
+
   toast.success("Registration Successful");
   navigate("/dashboard");
-=======
   console.log(response.data);
->>>>>>> develop
+
 
   toast.success(
     "Registration Successful"

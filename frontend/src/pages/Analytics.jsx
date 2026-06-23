@@ -1,11 +1,51 @@
 import Sidebar from "../components/dashboard/Sidebar";
 import {
-  BarChart3,
+ // BarChart3,
   TrendingUp,
   Target,
 } from "lucide-react";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 const Analytics = () => {
+
+  const [analytics, setAnalytics] = useState({
+  // atsScore: 0,
+    totalInterviews: 0,
+    confidenceLevel: 0,
+  });
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  const fetchAnalytics = async () => {
+    try {
+
+      const token =
+localStorage.getItem("token");
+
+const response =
+await axios.get(
+  "http://localhost:5000/api/analytics",
+  {
+    headers: {
+      Authorization:
+        `Bearer ${token}`
+    }
+  }
+);
+
+      setAnalytics(response.data);
+
+    } catch (error) {
+
+      console.log("Analytics Error:", error);
+
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white">
 
@@ -13,7 +53,7 @@ const Analytics = () => {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex flex flex-col lg:flex-row-1 p-4 md:p-8 lg:p-10">
+      <div className="flex flex-col flex-1 p-4 md:p-8 lg:p-10">
 
         {/* Header */}
         <div className="mb-10">
@@ -31,36 +71,16 @@ const Analytics = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-          {/* ATS Score */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
-
-            <div className="bg-cyan-500/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-
-              <BarChart3 className="text-cyan-400" />
-
-            </div>
-
-            <h2 className="text-4xl font-bold mb-2">
-              82%
-            </h2>
-
-            <p className="text-gray-400">
-              Resume ATS Score
-            </p>
-
-          </div>
 
           {/* Interviews */}
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
 
             <div className="bg-green-500/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-
               <TrendingUp className="text-green-400" />
-
             </div>
 
             <h2 className="text-4xl font-bold mb-2">
-              12
+              {analytics.totalInterviews}
             </h2>
 
             <p className="text-gray-400">
@@ -73,13 +93,11 @@ const Analytics = () => {
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-xl">
 
             <div className="bg-yellow-500/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-
               <Target className="text-yellow-400" />
-
             </div>
 
             <h2 className="text-4xl font-bold mb-2">
-              80%
+              {analytics.confidenceLevel}%
             </h2>
 
             <p className="text-gray-400">
@@ -99,33 +117,22 @@ const Analytics = () => {
 
           <div className="space-y-8">
 
-            {/* Resume */}
-            <div>
-
-              <div className="flex flex-col lg:flex-row justify-between mb-3">
-                <span>Resume Optimization</span>
-                <span>82%</span>
-              </div>
-
-              <div className="w-full bg-slate-800 rounded-full h-3">
-
-                <div className="bg-cyan-400 h-3 rounded-full w-[82%]"></div>
-
-              </div>
-
-            </div>
-
             {/* Interview */}
             <div>
 
               <div className="flex flex-col lg:flex-row justify-between mb-3">
                 <span>Interview Readiness</span>
-                <span>75%</span>
+                <span>{analytics.confidenceLevel}%</span>
               </div>
 
               <div className="w-full bg-slate-800 rounded-full h-3">
 
-                <div className="bg-green-400 h-3 rounded-full w-[75%]"></div>
+                <div
+                  className="bg-green-400 h-3 rounded-full"
+                  style={{
+                    width: `${analytics.confidenceLevel}%`
+                  }}
+                ></div>
 
               </div>
 
@@ -136,12 +143,17 @@ const Analytics = () => {
 
               <div className="flex flex-col lg:flex-row justify-between mb-3">
                 <span>Communication Skills</span>
-                <span>80%</span>
+                <span>{analytics.confidenceLevel}%</span>
               </div>
 
               <div className="w-full bg-slate-800 rounded-full h-3">
 
-                <div className="bg-yellow-400 h-3 rounded-full w-[80%]"></div>
+                <div
+                  className="bg-yellow-400 h-3 rounded-full"
+                  style={{
+                    width: `${analytics.confidenceLevel}%`
+                  }}
+                ></div>
 
               </div>
 

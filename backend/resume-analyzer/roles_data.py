@@ -6,7 +6,7 @@ ROLES = {
 
     "Full Stack Developer": ["react", "nodejs", "mongodb", "express", "sql"],
 
-    "AI/ML Engineer": ["python", "deep learning", "tensorflow", "pytorch", "nlp"],
+    "AI-ML Engineer": ["python", "deep learning", "tensorflow", "pytorch", "nlp"],
 
     "Data Analyst": ["excel", "sql", "power bi", "tableau", "python"],
 
@@ -28,7 +28,7 @@ ROLES = {
 
     "Blockchain Developer": ["solidity", "ethereum", "smart contracts"],
 
-    "UI/UX Designer": ["figma", "wireframing", "prototyping", "design thinking"],
+    "UI-UX Designer": ["figma", "wireframing", "prototyping", "design thinking"],
 
     "Game Developer": ["unity", "c#", "unreal engine"],
 

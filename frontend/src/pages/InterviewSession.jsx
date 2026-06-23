@@ -16,7 +16,6 @@ const InterviewSession = () => {
   const [allAnswers, setAllAnswers] = useState([]);
   const [isEnded, setIsEnded] = useState(false);
 
-  const videoRef = useRef(null);
 
   const currentQuestion = questions?.[currentQuestionIndex];
 
@@ -50,20 +49,7 @@ const InterviewSession = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // 📷 CAMERA
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-
-    } catch (err) {
-      console.log("Camera error:", err);
-    }
-  };
-
+  
   // 🎤 SPEECH TO TEXT
   const startListening = () => {
 
@@ -228,22 +214,7 @@ const user = JSON.parse(localStorage.getItem("user"));
           End
         </button>
 
-        <button
-          onClick={startCamera}
-          className="bg-cyan-500 px-4 py-2 rounded"
-        >
-          Start Camera
-        </button>
-
-      </div>
-
-      {/* CAMERA */}
-      <video
-        ref={videoRef}
-        autoPlay
-        className="w-64 mt-5 rounded-xl"
-      />
-
+</div>
     </div>
   );
 };

@@ -174,7 +174,7 @@ useEffect(() => {
                   DevOps Engineer
                 </option>
                 <option>
-                  AI/ML Engineer
+                  AI-ML Engineer
                 </option>
                 <option>
                    Cyber Security Engineer
@@ -193,7 +193,7 @@ useEffect(() => {
                   Blockchain Developer
                 </option>
                 <option>
-                  UI/UX Designer
+                  UI-UX Designer
                 </option>
                 <option>
                   Game Developer
