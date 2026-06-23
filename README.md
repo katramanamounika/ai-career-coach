@@ -79,7 +79,7 @@ AI-Career-Coach/
 ### Clone Repository
 
 ```bash
-git clone <https://github.com/katramanamounika/ai-career-coach>
+git clone https://github.com/katramanamounika/ai-career-coach
 cd ai-career-coach
 ```
 
