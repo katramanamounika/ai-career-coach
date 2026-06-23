@@ -120,7 +120,7 @@ python -m uvicorn main:app --reload
 * K.Mounika
 * L.Shivani
 * M.Jasvitha
-* v.Jeshitha
+* V.Jeshitha
 * N.Srinika
 * P.Shravyanjali
 
